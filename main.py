@@ -2,6 +2,7 @@ import win32com.client as win32
 from time import sleep
 from source_to_basefile import *
 from basefile_to_exam import *
+import os
 
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
@@ -13,8 +14,10 @@ def init_hwp():
     return hwp
 
 hwp = init_hwp()
-src = r"D:\PythonTyphoon\태풍\testbench_src.hwp"
-dst = r"D:\PythonTyphoon\태풍\testbench_dst.hwp"
+directory = os.getcwd()
+print(directory)
+src = directory + r"\태풍\testbench_src.hwp"
+dst = directory + r"\태풍\testbench_dst.hwp"
 for i in range(1, 5):
     source_to_basefile_problem(hwp, src, i, dst, i)
     source_to_basefile_solution(hwp, src, i, dst, i)
