@@ -15,7 +15,6 @@ def init_hwp():
 
 hwp = init_hwp()
 directory = os.getcwd()
-print(directory)
 src = directory + r"\태풍\testbench_src.hwp"
 dst = directory + r"\태풍\testbench_dst.hwp"
 for i in range(1, 5):
