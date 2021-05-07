@@ -16,6 +16,8 @@ from time import sleep
 # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
 """
 def source_to_basefile_copy_problem(hwp, source, problem_number):
+    if os.path.exists(source) == False:
+        raise Exception("문제저장용 파일이 존재하지 않습니다!")
     hwp.Open(rf'{source}')
     # 오류 처리 구문
     field_list = hwp.GetFieldList().split("\x02")
@@ -29,6 +31,8 @@ def source_to_basefile_copy_problem(hwp, source, problem_number):
     sleep(0.5)
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
+    if os.path.exists(source) == False:
+        raise Exception("문제저장용 파일이 존재하지 않습니다!")
     hwp.Open(rf'{source}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번풀이' not in field_list:
@@ -49,6 +53,8 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
 # ★ 검토용파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!  
 """
 def source_to_basefile_paste_problem(hwp, destination, problem_number):
+    if os.path.exists(destination) == False:
+        raise Exception("검토용 파일이 존재하지 않습니다!")
     shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
     dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
     hwp.Open(rf'{dst_temp}')
@@ -63,6 +69,8 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     sleep(0.5)
 
 def source_to_basefile_paste_solution(hwp, destination, problem_number):
+    if os.path.exists(destination) == False:
+        raise Exception("검토용 파일이 존재하지 않습니다!")
     shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
     dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
     hwp.Open(rf'{dst_temp}')
