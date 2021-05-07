@@ -19,5 +19,4 @@ src = directory + r"\태풍\testbench_src.hwp"
 dst = directory + r"\태풍\testbench_dst.hwp"
 i = 6
 source_to_basefile_problem(hwp, src, i, dst, i)
-# source_to_basefile_solution(hwp, src, i, dst, i)
-
+source_to_basefile_solution(hwp, src, i, dst, i)
