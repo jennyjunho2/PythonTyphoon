@@ -17,6 +17,10 @@ from time import sleep
 """
 def source_to_basefile_copy_problem(hwp, source, problem_number):
     hwp.Open(rf'{source}')
+    # 오류 처리 구문
+    field_list = hwp.GetFieldList().split("\x02")
+    if f'{problem_number}번문제' not in field_list:
+        raise Exception(f"문제 저장용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("MoveRight")
     hwp.HAction.Run("MoveSelTopLevelEnd")
@@ -26,6 +30,9 @@ def source_to_basefile_copy_problem(hwp, source, problem_number):
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
     hwp.Open(rf'{source}')
+    field_list = hwp.GetFieldList().split("\x02")
+    if f'{problem_number}번풀이' not in field_list:
+        raise Exception(f"문제 저장용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("MoveRight")
     hwp.HAction.Run("MoveSelTopLevelEnd")
@@ -34,17 +41,20 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
     sleep(0.5)
 
 """
-# 문제저장용 파일에서 베이스파일로 문제, 풀이를 붙여넣기하는 함수입니다.
+# 문제저장용 파일에서 검토용파일로 문제, 풀이를 붙여넣기하는 함수입니다.
 # hwp : 아래아한글 기본파일
-# destination : 베이스파일 파일경로
-# problem_number : 베이스파일에 넣을 문제번호
+# destination : 검토용파일 파일경로
+# problem_number : 검토용파일에 넣을 문제번호
 # paste_problem은 문제를, paste_solution은 풀이를 복사하는 함수입니다.
-# ★ 베이스파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!  
+# ★ 검토용파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!  
 """
 def source_to_basefile_paste_problem(hwp, destination, problem_number):
     shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
     dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
     hwp.Open(rf'{dst_temp}')
+    field_list = hwp.GetFieldList().split("\x02")
+    if f'{problem_number}번문제' not in field_list:
+        raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
@@ -56,6 +66,9 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
     dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
     hwp.Open(rf'{dst_temp}')
+    field_list = hwp.GetFieldList().split("\x02")
+    if f'{problem_number}번문제' not in field_list:
+        raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
@@ -69,8 +82,8 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
 # hwp : 아래아한글 기본파일
 # source : 문제저장용 파일경로
 # source_number : 문제저장용에서 가져올 문제 번호
-# destination : 베이스파일 파일경로
-# destination_number : 베이스파일에 넣을 문제번호  
+# destination : 검토용파일 파일경로
+# destination_number : 검토용파일에 넣을 문제번호  
 """
 def source_to_basefile_problem(hwp, source, source_number, destination, destination_number):
     source_to_basefile_copy_problem(hwp, source, source_number)

@@ -17,11 +17,7 @@ hwp = init_hwp()
 directory = os.getcwd()
 src = directory + r"\태풍\testbench_src.hwp"
 dst = directory + r"\태풍\testbench_dst.hwp"
-for i in range(1, 5):
-    source_to_basefile_problem(hwp, src, i, dst, i)
-    source_to_basefile_solution(hwp, src, i, dst, i)
-add_score(hwp, dst, 1, 3)
-add_score(hwp, dst, 2, 4)
-add_score(hwp, dst, 3, 5)
-add_score(hwp, dst, 4, 6)
+i = 6
+source_to_basefile_problem(hwp, src, i, dst, i)
+# source_to_basefile_solution(hwp, src, i, dst, i)
 
