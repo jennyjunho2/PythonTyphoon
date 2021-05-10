@@ -55,34 +55,46 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
 def source_to_basefile_paste_problem(hwp, destination, problem_number):
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
-    shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
-    dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
-    hwp.Open(rf'{dst_temp}')
+    hwp.Open(rf'{destination}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번문제' not in field_list:
         raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
-    hwp.SaveAs(rf"{destination}")
-    os.remove(dst_temp)
+    hwp.Save()
     sleep(0.5)
 
 def source_to_basefile_paste_solution(hwp, destination, problem_number):
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
-    shutil.copyfile(destination, rf"{destination[:-4]}"+"_temp.hwp")
-    dst_temp = rf"{destination[:-4]}" + "_temp.hwp"
-    hwp.Open(rf'{dst_temp}')
+    hwp.Open(rf'{destination}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번문제' not in field_list:
         raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
-    hwp.SaveAs(rf"{destination}")
-    os.remove(dst_temp)
+    hwp.Save()
     sleep(0.5)
+
+def usage_exclude(hwp, destination):
+    hwp.Open(rf"{destination}")
+    hwp.MovePos(2)
+    field_list_problem = [field for field in hwp.GetFieldList().split("\x02") if "번문제" in field]
+    for field_problem in field_list_problem:
+        hwp.MoveToField(field_problem)
+        hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+        hwp.HParameterSet.HFindReplace.FindString = "번"
+        hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir("Forward")
+        hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
+        hwp.HParameterSet.HFindReplace.FindType = 1
+        status = hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+        hwp.HAction.Run("MoveNextParaBegin")
+        hwp.HAction.Run("MoveSelTopLevelEnd")
+        hwp.HAction.Run("Delete")
+        hwp.HAction.Run("MoveDown")
+    hwp.Save()
 
 """
 # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사, 붙여넣기하는 함수입니다.
@@ -96,6 +108,7 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
 def source_to_basefile_problem(hwp, source, source_number, destination, destination_number):
     source_to_basefile_copy_problem(hwp, source, source_number)
     source_to_basefile_paste_problem(hwp, destination, destination_number)
+
 
 def source_to_basefile_solution(hwp, source, source_number, destination, destination_number):
     source_to_basefile_copy_solution(hwp, source, source_number)

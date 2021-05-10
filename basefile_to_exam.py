@@ -46,4 +46,4 @@ def add_score(hwp, source, problem_number, score, choice = True):
 
     hwp.SaveAs(rf"{source}")
     os.remove(source_temp)
-    sleep(0.5)
+    sleep(0.2)
