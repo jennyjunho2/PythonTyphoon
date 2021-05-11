@@ -24,7 +24,6 @@ dst = directory + r"\태풍\testbench_dst.hwp"
 # Test Code
 start_time = dt.now()
 source_to_problem_execute(hwp, excel = excel_test, grade_number = grade_number, test_name = "테스트 시험지", dst = dst)
-usage_exclude(hwp, destination = dst, grade = grade_number)
 end_time = dt.now()
 elapsed_time = end_time - start_time
 print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
