@@ -1,6 +1,7 @@
-import shutil
 import os
 from time import sleep
+
+from read_excel import array_to_problem_directory, get_problem_list
 
 """
 # 본 모듈은 문제저장용파일에서 베이스파일로 가져올 때 사용하는 모듈입니다.
@@ -78,14 +79,18 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     hwp.Save()
     sleep(0.5)
 
-def usage_exclude(hwp, destination):
+def usage_exclude(hwp, destination, grade):
+    print("출처 삭제중...")
     hwp.Open(rf"{destination}")
     hwp.MovePos(2)
     field_list_problem = [field for field in hwp.GetFieldList().split("\x02") if "번문제" in field]
     for field_problem in field_list_problem:
         hwp.MoveToField(field_problem)
         hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-        hwp.HParameterSet.HFindReplace.FindString = "번"
+        if grade == 1:
+            hwp.HParameterSet.HFindReplace.FindString = "고1"
+        elif grade == 2:
+            hwp.HParameterSet.HFindReplace.FindString = "고2"
         hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir("Forward")
         hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
         hwp.HParameterSet.HFindReplace.FindType = 1
@@ -95,6 +100,19 @@ def usage_exclude(hwp, destination):
         hwp.HAction.Run("Delete")
         hwp.HAction.Run("MoveDown")
     hwp.Save()
+    print("출처 삭제완료!")
+
+def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str,  dst : str):
+    problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
+    for i in range(problems.shape[0]):
+        src = array_to_problem_directory(problems[i, :], grade=grade_number)
+        src_problem_number = get_problem_list(excel, grade=grade_number, test_name=test_name)[i][3]
+        dst_problem_number = int(get_problem_list(excel, grade=grade_number, test_name=test_name)[i][4])
+        # src_problem_score = int(get_problem_list(excel_test, grade=grade_number, test_name="테스트 시험지")[i][5])
+        print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
+        source_to_basefile_problem(hwp, source = src , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
+        source_to_basefile_solution(hwp, source = src, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
+        print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
 
 """
 # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사, 붙여넣기하는 함수입니다.
