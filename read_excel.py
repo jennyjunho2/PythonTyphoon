@@ -1,9 +1,10 @@
 import os
+import numpy as np
 import pandas as pd
 from datetime import datetime
 import directory_source
 
-def readexcel(xlsx_path, grade : int):
+def readexcel(xlsx_path : str, grade : int):
     year = str(datetime.today().year)
     try:
         if grade == 1:
@@ -16,7 +17,7 @@ def readexcel(xlsx_path, grade : int):
     except FileNotFoundError:
         print("주문서가 존재하지 않습니다!, 경로를 확인해 주세요.")
 
-def get_problem_list(excel, grade : int, test_name : str):
+def get_problem_list(excel : str, grade : int, test_name : str):
     excel_problem_list = readexcel(excel, grade)
     score_index = excel_problem_list.columns.tolist().index(test_name)+1
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name,
@@ -94,9 +95,16 @@ def array_to_problem_directory(array, grade : int):
     directory_final = directory_source.directory_source[directory]
     return directory_final
 
+def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_to : str):
+    excel_problem_from = get_problem_list(excel, grade = grade, test_name = test_name_from)[:, :-2]
+    excel_problem_to = get_problem_list(excel, grade = grade, test_name = test_name_to)[:, :-2]
+    excel_problem_to_set = set([tuple(x) for x in excel_problem_to])
+    excel_problem_from_set = set([tuple(x) for x in excel_problem_from])
+    excel_problem_intersect = set([x for x in set.intersection(excel_problem_from_set, excel_problem_to_set)])
+    excel_problem_to_not_intersect = np.array(list(excel_problem_to_set - set.intersection(excel_problem_from_set, excel_problem_to_set)))
+    return excel_problem_to_not_intersect, np.array(list(excel_problem_intersect))
 
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
-    print(get_problem_list(excelfile_directory, 1, "테스트 시험지")[0])
-    print(array_to_problem_directory(get_problem_list(excelfile_directory, 1, "테스트 시험지")[0], 1))
+    print(get_problem_list_change(excelfile_directory, grade = 1, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1"))
