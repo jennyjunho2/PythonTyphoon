@@ -1,8 +1,16 @@
 import os
-import numpy as np
+import directory_source
 import pandas as pd
 from datetime import datetime
-import directory_source
+import warnings
+warnings.filterwarnings(action='ignore')
+
+global replace_question_to_number
+global replace_number_to_question
+replace_question_to_number = { '서답형1' : 41,'서답형2' : 42, '서답형3' : 43,'서답형4' : 44,'서답형5' : 45,'서답형6' : 46,'서답형7' : 47,'서답형8' : 48,'서답형9' : 49,'서답형10' : 50,
+                            '서술형1' : 51,'서술형2' : 52, '서술형3' : 53, '서술형4' : 54, '서술형5' : 55, '서술형6' : 56, '서술형7' : 57, '서술형8' : 58, '서술형9' : 59, '서술형10' : 60}
+replace_number_to_question = {41 : '서1', 42 : '서2', 43 : '서3',44 : '서4',45 : '서5',46 : '서6',47 : '서7', 48 : '서8', 49 : '서9', 50 : '서10',
+                              51 : '서1', 52 : '서2', 53 : '서3',54 : '서4',55 : '서5',56 : '서6',57 : '서7', 58 : '서8', 59 : '서9', 60 : '서10'}
 
 def readexcel(xlsx_path : str, grade : int):
     year = str(datetime.today().year)
@@ -19,9 +27,8 @@ def readexcel(xlsx_path : str, grade : int):
 
 def get_problem_list(excel : str, grade : int, test_name : str):
     excel_problem_list = readexcel(excel, grade)
-    score_index = excel_problem_list.columns.tolist().index(test_name)+1
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name,
-                                                           excel_problem_list.columns.tolist()[score_index]]].dropna(axis = 0).to_numpy()
+                                                           excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number}).to_numpy()
     return excel_problem_list_problem_index
 
 def array_to_problem_directory(array, grade : int):
@@ -96,15 +103,15 @@ def array_to_problem_directory(array, grade : int):
     return directory_final
 
 def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_to : str):
-    excel_problem_from = get_problem_list(excel, grade = grade, test_name = test_name_from)[:, :-2]
-    excel_problem_to = get_problem_list(excel, grade = grade, test_name = test_name_to)[:, :-2]
-    excel_problem_to_set = set([tuple(x) for x in excel_problem_to])
-    excel_problem_from_set = set([tuple(x) for x in excel_problem_from])
-    excel_problem_intersect = set([x for x in set.intersection(excel_problem_from_set, excel_problem_to_set)])
-    excel_problem_to_not_intersect = np.array(list(excel_problem_to_set - set.intersection(excel_problem_from_set, excel_problem_to_set)))
-    return excel_problem_to_not_intersect, np.array(list(excel_problem_intersect))
-
+    excel_problem_list = readexcel(excel, grade)
+    excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name_from,
+                                                           excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name_from) + 1],
+                                                           test_name_to, excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name_to) + 1]]].replace({test_name_to : replace_question_to_number}).replace({test_name_from : replace_question_to_number})
+    excel_problem_list_intersect = excel_problem_list_problem_index.dropna(axis = 0).iloc[:, [0, 1, 2, 3, 6, 7]].sort_values(by = [test_name_to], axis = 0).to_numpy()
+    excel_problem_list_not_intersect = excel_problem_list_problem_index.dropna(subset = [test_name_to])[excel_problem_list_problem_index[test_name_from].isna()].iloc[:, [0, 1, 2, 3, 6, 7]].sort_values(by = [test_name_to], axis = 0).to_numpy()
+    return excel_problem_list_intersect, excel_problem_list_not_intersect
 
 if __name__ == "__main__":
-    excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
-    print(get_problem_list_change(excelfile_directory, grade = 1, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1"))
+    print()
+    # excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
+    # print(get_problem_list_change(excelfile_directory, grade = 1, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1"))
