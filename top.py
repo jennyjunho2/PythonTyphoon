@@ -5,6 +5,7 @@ from basefile_to_exam import *
 import os
 import shutil
 from read_excel import *
+from directory_source import *
 
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
@@ -15,9 +16,11 @@ def init_hwp():
     hwp.HAction.Execute("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
     return hwp
 
+
 hwp = init_hwp()
 #############################
 directory = os.getcwd()
+problem_directory = directory + r'\문제저장용'
 excel_test = directory + r'\태풍\내신주문서.xlsx'
 testbench_fieldtest = directory + r'\태풍\testbench_fieldtest.hwp'
 grade_number = 1 # 고1
@@ -32,8 +35,10 @@ grade_number = 1 # 고1
 # print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
 
 #Test Code 2
-start_time = dt.now()
-add_field_source_file(hwp, testbench_fieldtest)
-end_time = dt.now()
-elapsed_time = end_time - start_time
-print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+# start_time = dt.now()
+# add_field_source_file(hwp, testbench_fieldtest)
+# end_time = dt.now()
+# elapsed_time = end_time - start_time
+# print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
+print(get_problem_directory_list(problem_directory))
