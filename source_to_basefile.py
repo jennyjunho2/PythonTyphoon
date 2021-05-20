@@ -183,5 +183,52 @@ def new_basefile_no_number(file_name : str):
     new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일(문제+답지).hwp'
     return new_file
 
+def add_field(hwp, field_name):
+    hwp.HAction.GetDefault("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
+    hwp.HParameterSet.HInsertFieldTemplate.TemplateDirection = field_name
+    hwp.HParameterSet.HInsertFieldTemplate.TemplateName = field_name
+    hwp.HAction.Execute("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
+
+def add_field_source_file(hwp, source : str):
+    hwp.Open(f"{source}")
+    for page in range(1, hwp.PageCount + 1):
+        if page == 1:
+            hwp.MovePos(2)
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            add_field(hwp, "1번문제")
+            hwp.MovePos(2)
+            hwp.HAction.Run("MoveNextColumn")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveDown")
+            add_field(hwp, "1번풀이")
+            hwp.Run("MovePageDown")
+            sleep(0.1)
+        else:
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveUp")
+            add_field(hwp, f"{page}번문제")
+            hwp.HAction.Run("MoveUp")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveNextColumn")
+            hwp.HAction.Run("MoveDown")
+            hwp.HAction.Run("MoveUp")
+            add_field(hwp, f"{page}번풀이")
+            hwp.Run("MovePageDown")
+            sleep(0.1)
+        hwp.Save()
+
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
