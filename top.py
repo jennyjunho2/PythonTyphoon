@@ -21,8 +21,10 @@ hwp = init_hwp()
 #############################
 directory = os.getcwd()
 problem_directory = directory + r'\문제저장용'
+problem_directory_test = directory + r'\문제저장용_test'
 excel_test = directory + r'\태풍\내신주문서.xlsx'
 testbench_fieldtest = directory + r'\태풍\testbench_fieldtest.hwp'
+testbench_fieldtest2 = directory + r'\태풍\testbench_fieldtest2.hwp'
 grade_number = 1 # 고1
 #############################
 
@@ -41,4 +43,8 @@ grade_number = 1 # 고1
 # elapsed_time = end_time - start_time
 # print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
 
-print(get_problem_directory_list(problem_directory))
+for file_directory in get_problem_directory_list(problem_directory_test):
+    add_field_source_file(hwp, source = file_directory)
+
+# add_field_source_file(hwp, testbench_fieldtest2)
+# print(get_current_pos(hwp, testbench_fieldtest))

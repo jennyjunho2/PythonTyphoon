@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 """
 # 문제저장용 경로를 포함하고 있는 파일입니다.
@@ -187,12 +188,24 @@ directory_source = {
 """
 # find_empty_file 함수는 source의 dictionary에서 파일 경로에 파일이 있는지 검사합니다.
 """
+def find_word(hwp, word, direction="Forward"):
+    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+    hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir(direction)
+    hwp.HParameterSet.HFindReplace.FindString = word
+    hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
+    hwp.HParameterSet.HFindReplace.FindType = 1
+    hwp.HParameterSet.HFindReplace.SeveralWords = 1
+    status = hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+    return
+
 def find_empty_file(source):
     for key, val in source.items():
         if not os.path.isfile(val):
             print(key)
         else:
             pass
+
+
 
 def get_problem_directory_list(root_directory):
     file_list = []

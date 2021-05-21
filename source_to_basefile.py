@@ -189,46 +189,43 @@ def add_field(hwp, field_name):
     hwp.HParameterSet.HInsertFieldTemplate.TemplateName = field_name
     hwp.HAction.Execute("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
 
+
 def add_field_source_file(hwp, source : str):
     hwp.Open(f"{source}")
+    hwp.MovePos(2)
     for page in range(1, hwp.PageCount + 1):
         if page == 1:
-            hwp.MovePos(2)
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            add_field(hwp, "1번문제")
+            count = 0
+            while count <= 7:
+                hwp.HAction.Run("MoveDown")
+                count = count + 1
+            add_field(hwp, f"{page}번문제")
             hwp.MovePos(2)
             hwp.HAction.Run("MoveNextColumn")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveDown")
-            add_field(hwp, "1번풀이")
-            hwp.Run("MovePageDown")
+            count2 = 0
+            while count2 <= 7:
+                hwp.HAction.Run("MoveDown")
+                count2 = count2 + 1
+            add_field(hwp, f"{page}번풀이")
+            hwp.HAction.Run("MovePageDown")
             sleep(0.1)
         else:
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveUp")
+            current_position = hwp.GetPos()
+            hwp.HAction.Run("MovePrevPosEx")
+            hwp.HAction.Run("MoveListBegin")
             add_field(hwp, f"{page}번문제")
-            hwp.HAction.Run("MoveUp")
-            hwp.HAction.Run("MoveDown")
+            hwp.SetPos(*current_position)
             hwp.HAction.Run("MoveNextColumn")
-            hwp.HAction.Run("MoveDown")
-            hwp.HAction.Run("MoveUp")
+            hwp.HAction.Run("MovePrevPosEx")
+            hwp.HAction.Run("MoveListBegin")
             add_field(hwp, f"{page}번풀이")
-            hwp.Run("MovePageDown")
+            hwp.HAction.Run("MovePageDown")
             sleep(0.1)
-        hwp.Save()
+
+def get_current_pos(hwp, source : str):
+    hwp.Open(f"{source}")
+    current_position = hwp.GetPos()
+    return current_position
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
