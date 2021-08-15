@@ -205,8 +205,6 @@ def find_empty_file(source):
         else:
             pass
 
-
-
 def get_problem_directory_list(root_directory):
     file_list = []
     for path, subdirs, files in os.walk(root_directory):

@@ -2,6 +2,8 @@ import win32com.client as win32
 from datetime import datetime as dt
 from source_to_basefile import *
 from basefile_to_exam import *
+import pandas as pd
+import pyperclip
 import os
 import shutil
 from read_excel import *
@@ -25,13 +27,14 @@ problem_directory_test = directory + r'\문제저장용_test'
 excel_test = directory + r'\태풍\내신주문서.xlsx'
 testbench_fieldtest = directory + r'\태풍\testbench_fieldtest.hwp'
 testbench_fieldtest2 = directory + r'\태풍\testbench_fieldtest2.hwp'
+testbench_fieldtest3 = directory + r'\태풍\testbench_fieldtest3.hwp'
 grade_number = 1 # 고1
 #############################
 
 # Test Code
 # 엑셀을 통한 변형문제 제작
 # start_time = dt.now()
-# # source_to_problem_execute(hwp, excel = excel_test, grade_number = grade_number, test_name = "테스트 시험지")
+# source_to_problem_execute(hwp, excel = excel_test, grade_number = grade_number, test_name = "테스트 시험지")
 # source_to_problem_change_basefile(hwp, excel = excel_test, grade_number = grade_number, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1")
 # end_time = dt.now()
 # elapsed_time = end_time - start_time
@@ -47,5 +50,17 @@ grade_number = 1 # 고1
 
 # Test Code 3
 # 하위 경로의 모든 파일에 source file 추가
-for file_directory in get_problem_directory_list(problem_directory_test):
-    add_field_source_file(hwp, source = file_directory)
+# start_time = dt.now()
+# for file_directory in get_problem_directory_list(problem_directory_test):
+#     add_field_source_file(hwp, source = file_directory)
+# end_time = dt.now()
+# elapsed_time = end_time - start_time
+# print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
+# Test Code 4
+start_time = dt.now()
+a = get_problem_list(excel = excel_test, grade = 1, test_name = "양정 최종마무리3 (210707)")
+print(array_to_problem_directory(array = a, grade = 1))
+end_time = dt.now()
+elapsed_time = end_time - start_time
+print(f'로딩을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')

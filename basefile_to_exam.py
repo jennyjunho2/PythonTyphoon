@@ -1,6 +1,7 @@
 import shutil
 import os
 from time import sleep
+import source_to_basefile
 
 """
 # 배점 추가함수, 시험지에 문제를 추가한 후 실행하여주세요.
@@ -47,3 +48,9 @@ def add_score(hwp, source, problem_number, score, choice = True):
     hwp.SaveAs(rf"{source}")
     os.remove(source_temp)
     sleep(0.2)
+
+def problem_array_to_exam_problem(hwp, array, grade : int, test_name : str, destination):
+    for problem in array:
+        directory_source, problem_number, exam_number, score = problem[0], problem[1], problem[2], problem[3]
+        source_to_basefile.source_to_basefile_copy_problem(hwp = hwp, source = directory_source, problem_number = problem_number)
+        source_to_basefile.source_to_basefile_paste_problem(hwp = hwp, destination = destination, problem_number = exam_number)

@@ -5,7 +5,7 @@ from read_excel import *
 
 """
 # 본 모듈은 문제저장용 파일에서 베이스파일로 가져올 때 사용하는 모듈입니다.
-# 만든이 : 이준호(a01032208149@gmail.com으로 연락주세요.)
+# 만든이 : 이준호(a01032208149@gmail.com으로 연락주세요 :) )
 """
 
 def find_word(hwp, word, direction="Forward"):
@@ -25,12 +25,12 @@ def write_text(hwp, text : str):
 
 def source_to_basefile_copy_problem(hwp, source, problem_number):
     """
-    # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사하는 함수입니다.
-    # hwp : 아래아한글 기본파일
-    # source : 문제저장용 파일경로
-    # problem_number : 문제저장용 파일에서 가져올 문제번호
-    # copy_problem은 문제를, copy_solution은 풀이를 복사하는 함수입니다.
-    # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
+    # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사하는 함수입니다. \n
+    # hwp : 아래아한글 기본파일 \n
+    # source : 문제저장용 파일경로 \n
+    # problem_number : 문제저장용 파일에서 가져올 문제번호 \n
+    # copy_problem은 문제를, copy_solution은 풀이를 복사하는 함수입니다. \n
+    # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!! \n
     """
     # 오류 처리 구문
     if os.path.exists(source) == False:
@@ -226,6 +226,11 @@ def get_current_pos(hwp, source : str):
     hwp.Open(f"{source}")
     current_position = hwp.GetPos()
     return current_position
+
+def get_current_keyindicator(hwp, source : str):
+    hwp.Open(f"{source}")
+    keyindicator = hwp.KeyIndicator()
+    return keyindicator
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
