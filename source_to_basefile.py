@@ -235,7 +235,6 @@ def add_field_source_file(hwp, source : str):
     while True:
         find_random_word(hwp = hwp, size = 10.0)
         current_page = hwp.XHwpDocuments.Item(0).XHwpDocumentInfo.CurrentPage
-        print(before_page, current_page)
         if before_page < current_page:
             field_position[hwp.GetPos()] = "problem"
             hwp.HAction.Run("MovePageDown")
@@ -271,6 +270,7 @@ def add_field_source_file(hwp, source : str):
         add_field(hwp = hwp, field_name = f"{num2}번풀이")
         sleep(0.1)
         num2 += 1
+    hwp.Save()
 
 def get_current_pos(hwp, source : str):
     hwp.Open(f"{source}")
