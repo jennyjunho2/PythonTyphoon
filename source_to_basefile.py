@@ -23,7 +23,7 @@ def write_text(hwp, text : str):
     hwp.HParameterSet.HInsertText.Text = text
     hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
 
-def source_to_basefile_copy_problem(hwp, source, problem_number):
+def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only_problem : bool = False):
     """
     # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사하는 함수입니다. \n
     # hwp : 아래아한글 기본파일 \n
@@ -41,23 +41,35 @@ def source_to_basefile_copy_problem(hwp, source, problem_number):
         raise Exception(f"문제 저장용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("MoveRight")
-    start_pos = hwp.GetPos()
-    end_string = """1번, 2번, 3번, 4번, 5번, 6번, 7번, 8번, 9번, 10번,
-                 11번, 12번, 13번, 14번, 15번, 16번, 17번, 18번, 19번, 20번,
-                 21번, 22번, 23번, 24번, 25번, 26번, 27번, 28번, 29번, 30번,
-                 31번, 32번, 33번, 34번, 35번, 36번, 37번, 38번, 39번, 40번,
-                 41번, 42번, 43번, 44번, 45번, 46번, 47번, 48번, 49번, 50번
-                 """
-    find_word(hwp, end_string, direction = "Forward")
-    hwp.HAction.Run("MoveLineEnd")
-    end_pos = hwp.GetPos()
-    hwp.Run("Cancel")
-    hwp.SetPos(*start_pos)
-    hwp.Run("Select")
-    hwp.SetPos(*end_pos)
-    hwp.HAction.Run("Copy")
-    hwp.HAction.Run("MoveDown")
-    sleep(0.2)
+    if (copy_only_problem == True):
+        start_pos = hwp.GetPos()
+        end_string = """1번, 2번, 3번, 4번, 5번, 6번, 7번, 8번, 9번, 10번,
+                     11번, 12번, 13번, 14번, 15번, 16번, 17번, 18번, 19번, 20번,
+                     21번, 22번, 23번, 24번, 25번, 26번, 27번, 28번, 29번, 30번,
+                     31번, 32번, 33번, 34번, 35번, 36번, 37번, 38번, 39번, 40번,
+                     41번, 42번, 43번, 44번, 45번, 46번, 47번, 48번, 49번, 50번
+                     """
+        find_word(hwp, end_string, direction = "Forward")
+        hwp.HAction.Run("MoveLineEnd")
+        end_pos = hwp.GetPos()
+        hwp.Run("Cancel")
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.HAction.Run("Copy")
+        hwp.HAction.Run("MoveDown")
+        sleep(0.2)
+    else:
+        start_pos = hwp.GetPos()
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("MoveRight")
+        end_pos = hwp.GetPos()
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.HAction.Run("Copy")
+        hwp.HAction.Run("MoveDown")
+        sleep(0.2)
 
 def add_problem_number_basefile(hwp, problem_array , file : str):
     hwp.Open(rf'{file}')
@@ -115,17 +127,18 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     hwp.Save()
     sleep(0.2)
 
-def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str):
-    dst = new_basefile(test_name)
+def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
+    dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     for i in range(problems.shape[0]):
-        src = array_to_problem_directory(problems[i, :], grade=grade_number)
-        src_problem_number = problems[i][3]
-        dst_problem_number = int(problems[i][4])
-        # src_problem_score = int(problems[i][5])
+        problem_set = problems.loc[i]
+        # print(problem_set)
+        src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
+        # print(src)
+        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
-        source_to_basefile_problem(hwp, source = src , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
-        source_to_basefile_solution(hwp, source = src, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
+        source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
+        source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
         print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
 
 def source_to_problem_change_basefile(hwp, excel : str, grade_number : int, test_name_from : str, test_name_to : str):

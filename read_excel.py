@@ -29,22 +29,22 @@ def readexcel(xlsx_path : str, grade : int):
 def get_problem_list(excel : str, grade : int, test_name : str):
     excel_problem_list = readexcel(excel, grade)
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name,
-                                                           excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number}).to_numpy()
+                                                           excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number})
     return excel_problem_list_problem_index
 
-def array_to_problem_directory(array, grade : int):
-    directory_final = np.array([])
-    for i in array:
-        big_lesson_unit, small_lesson_unit, difficulty= i[0].replace(" ", ""), i[1].replace(" ", ""), i[2].replace(" ", "")
-        if grade == 1:
-            big_lesson = {'다항식' : 1,
-                          '방정식' : 2,
+def array_to_problem_directory(problem_set, grade : int, test_name : str):
+    directory_final = []
+    problem_set.index = ["대단원", '소단원', '난이도', '번호', test_name, '배점']
+    big_lesson_unit, small_lesson_unit, difficulty= problem_set['대단원'].replace(" ", ""), problem_set['소단원'].replace(" ", ""), problem_set['난이도'].replace(" ", "")
+    if grade == 1:
+        big_lesson = {'다항식' : 1,
+                        '방정식' : 2,
                           '부등식' : 3,
                           '도형의방정식' : 4,
                           '집합과명제' : 5,
                           '함수' : 6,
                           '순열과조합' : 7}
-            small_lesson = {'다항식의연산' : 1,
+        small_lesson = {'다항식의연산' : 1,
                             '항등식과나머지정리' : 2,
                             '인수분해' : 3,
                             '복소수' : 1,
@@ -65,18 +65,18 @@ def array_to_problem_directory(array, grade : int):
                             '무리함수' : 3,
                             '순열' : 1,
                             '조합' : 2}
-            difficulty_number = {'최상' : 1,
+        difficulty_number = {'최상' : 1,
                           '상' : 2,
                           '중' : 3,
                           '하' : 4}
-        if grade == 2:
-            big_lesson = {'지수함수와로그함수' : 1,
+    if grade == 2:
+        big_lesson = {'지수함수와로그함수' : 1,
                           '삼각함수' : 2,
                           '수열' : 3,
                           '함수의극한과연속' : 4,
                           '미분' : 5,
                           '적분' : 6}
-            small_lesson = {'지수' : 1,
+        small_lesson = {'지수' : 1,
                             '로그' : 2,
                             '지수함수' : 3,
                             '로그함수' : 4,
@@ -97,13 +97,12 @@ def array_to_problem_directory(array, grade : int):
                             '정적분' : 2,
                             '정적분의활용' : 3
                             }
-            difficulty_number = {'최상': 1,
+        difficulty_number = {'최상': 1,
                           '상': 2,
                           '중': 3,
                           '하': 4}
-        directory = str(grade)+"-"+str(big_lesson[big_lesson_unit])+'-'+str(small_lesson[small_lesson_unit])+'-'+str(difficulty_number[difficulty])
-        directory_final = np.append(directory_final, directory_source.directory_source[directory])
-    directory_final = np.hstack((directory_final.reshape((array.shape[0], 1)), array[:, 3:]))
+    directory = str(grade)+"-"+str(big_lesson[big_lesson_unit])+'-'+str(small_lesson[small_lesson_unit])+'-'+str(difficulty_number[difficulty])
+    directory_final.extend((directory_source.directory_source[directory], problem_set['번호'], problem_set[test_name], problem_set['배점']))
     return directory_final
 
 def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_to : str):
