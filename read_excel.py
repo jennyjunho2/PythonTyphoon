@@ -30,7 +30,7 @@ def get_problem_list(excel : str, grade : int, test_name : str):
     excel_problem_list = readexcel(excel, grade)
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name,
                                                            excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number})
-    return excel_problem_list_problem_index
+    return excel_problem_list_problem_index.sort_values(by = [test_name])
 
 def array_to_problem_directory(problem_set, grade : int, test_name : str):
     directory_final = []
@@ -116,4 +116,5 @@ def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
-    print(readexcel(excelfile_directory, 1))
+    # print(readexcel(excelfile_directory, 1))
+    # print(get_problem_list(excel = r"D:\PythonTyphoon\태풍\내신주문서.xlsx", grade = 1, test_name = "양정 최종마무리3 (210707)"))

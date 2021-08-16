@@ -32,20 +32,22 @@ grade_number = 1 # 고1
 
 # Test Code
 # 엑셀을 통한 변형문제 제작
-start_time = dt.now()
-source_to_problem_execute(hwp, excel = excel_test, grade_number = grade_number, test_name = "양정 최종마무리3 (210707)")
-# # source_to_problem_change_basefile(hwp, excel = excel_test, grade_number = grade_number, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1")
-end_time = dt.now()
-elapsed_time = end_time - start_time
-print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
-
-# Test Code 2
-# 'testbench_fieldtest'에 필드 추가하는 함수
 # start_time = dt.now()
-# add_field_source_file(hwp, testbench_fieldtest)
+# source_to_problem_execute(hwp, excel = excel_test, grade_number = grade_number, test_name = "양정 최종마무리3 (210707)")
+# # # source_to_problem_change_basefile(hwp, excel = excel_test, grade_number = grade_number, test_name_from = "테스트 시험지", test_name_to = "변형 시험지 1")
 # end_time = dt.now()
 # elapsed_time = end_time - start_time
 # print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
+# Test Code 2
+# 'testbench_fieldtest'에 필드 추가하는 함수
+start_time = dt.now()
+# add_field_source_file(hwp, testbench_fieldtest)
+# add_field_source_file(hwp, testbench_fieldtest2)
+# add_field_source_file(hwp, testbench_fieldtest3)
+end_time = dt.now()
+elapsed_time = end_time - start_time
+print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
 
 # Test Code 3
 # 하위 경로의 모든 파일에 source file 추가
