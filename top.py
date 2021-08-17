@@ -42,9 +42,7 @@ print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되
 # Test Code 2
 # 'testbench_fieldtest'에 필드 추가하는 함수
 # start_time = dt.now()
-# # add_field_source_file(hwp, testbench_fieldtest)
-# # add_field_source_file(hwp, testbench_fieldtest2)
-# # add_field_source_file(hwp, testbench_fieldtest3)
+# add_field_source_file(hwp, r"D:\PythonTyphoon\태풍\3. 고2_수열_수열의 합_중.hwp")
 # end_time = dt.now()
 # elapsed_time = end_time - start_time
 # print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
@@ -57,11 +55,3 @@ print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되
 # end_time = dt.now()
 # elapsed_time = end_time - start_time
 # print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
-
-# Test Code 4
-# start_time = dt.now()
-# a = get_problem_list(excel = excel_test, grade = 1, test_name = "양정 최종마무리3 (210707)")
-# print(array_to_problem_directory(array = a, grade = 1))
-# end_time = dt.now()
-# elapsed_time = end_time - start_time
-# print(f'로딩을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')

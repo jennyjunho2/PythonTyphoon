@@ -156,8 +156,8 @@ def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : 
         print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
-        hwp.PutFieldText(Field = f"{i}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
-        hwp.PutFieldText(Field = f"{i}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
+        hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
+        hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
         print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
