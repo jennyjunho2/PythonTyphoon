@@ -13,7 +13,7 @@ from time import sleep
 
 # 이 모듈을 직접 실행할 경우, 어떤 파일이 비어있는 지 검사합니다.
 # 파일 이름이 잘못되어 있거나, 경로가 틀리게 되어있으면 해당하는 Key를 반환합니다.
-# 최상 파일을 없는 경우가 많습니다. 
+# 난이도 최상 파일은 없는 단원이 여럿 있습니다. 
 # 만든이 : 이준호(a01032208149@gmail.com)
 """
 
@@ -188,16 +188,6 @@ directory_source = {
 """
 # find_empty_file 함수는 source의 dictionary에서 파일 경로에 파일이 있는지 검사합니다.
 """
-def find_word(hwp, word, direction="Forward"):
-    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-    hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir(direction)
-    hwp.HParameterSet.HFindReplace.FindString = word
-    hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
-    hwp.HParameterSet.HFindReplace.FindType = 1
-    hwp.HParameterSet.HFindReplace.SeveralWords = 1
-    status = hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-    return
-
 def find_empty_file(source):
     for key, val in source.items():
         if not os.path.isfile(val):
