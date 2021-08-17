@@ -49,6 +49,7 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
     # copy_problem은 문제를, copy_solution은 풀이를 복사하는 함수입니다. \n
     # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!! \n
     """
+    hwp.Open(rf'{source}')
     # 오류 처리 구문
     if os.path.exists(source) == False:
         raise Exception("문제저장용 파일이 존재하지 않습니다!")
@@ -97,9 +98,9 @@ def add_problem_number_basefile(hwp, problem_array , file : str):
         write_text(hwp, str(problem_array[int(field[0])-1]))
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
+    hwp.Open(rf'{source}')
     if os.path.exists(source) == False:
         raise Exception("문제저장용 파일이 존재하지 않습니다!")
-    hwp.Open(rf'{source}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번풀이' not in field_list:
         raise Exception(f"문제 저장용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
@@ -119,9 +120,9 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     # paste_problem은 문제를, paste_solution은 풀이를 복사하는 함수입니다.
     # ★ 검토용파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
     """
+    hwp.Open(rf'{destination}')
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
-    hwp.Open(rf'{destination}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번문제' not in field_list:
         raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
@@ -132,6 +133,7 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     sleep(0.2)
 
 def source_to_basefile_paste_solution(hwp, destination, problem_number):
+    hwp.Open(rf'{destination}')
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
     hwp.Open(rf'{destination}')
@@ -147,20 +149,22 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
 def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
     dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
+    dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
     for i in range(problems.shape[0]):
         problem_set = problems.iloc[i]
-        # print(problem_set)
         src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
         # print(src)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
-        source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
-        source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number)
+        source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
+        source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
         hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
         print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
+        hwp.Save()
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
+        hwp.Save()
     hwp.Save()
     sleep(0.2)
 
@@ -209,14 +213,14 @@ def source_to_basefile_solution(hwp, source, source_number, destination, destina
 
 def new_basefile(file_name : str):
     source_directory = os.getcwd() + r'\태풍\기출_문제+답지_원본_2문제씩_번호o.hwp'
-    shutil.copyfile(source_directory, os.getcwd() + rf'\태풍\{file_name}_검토용파일(문제+답지).hwp')
-    new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일(문제+답지).hwp'
+    shutil.copyfile(source_directory, os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp')
+    new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp'
     return new_file
 
 def new_basefile_no_number(file_name : str):
     source_directory = os.getcwd() + r'\태풍\기출_문제+답지_원본_2문제씩_번호x.hwp'
-    shutil.copyfile(source_directory, os.getcwd() + rf'\태풍\{file_name}_검토용파일(문제+답지).hwp')
-    new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일(문제+답지).hwp'
+    shutil.copyfile(source_directory, os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp')
+    new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp'
     return new_file
 
 def add_field(hwp, field_name):
