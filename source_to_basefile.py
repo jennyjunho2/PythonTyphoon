@@ -40,6 +40,76 @@ def write_text(hwp, text : str):
     hwp.HParameterSet.HInsertText.Text = text
     hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
 
+def add_field(hwp, field_name):
+    hwp.HAction.GetDefault("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
+    hwp.HParameterSet.HInsertFieldTemplate.TemplateDirection = field_name
+    hwp.HParameterSet.HInsertFieldTemplate.TemplateName = field_name
+    hwp.HAction.Execute("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
+
+def add_field_source_file(hwp, source : str):
+    hwp.Open(f"{source}")
+    hwp.MovePos(2)
+    field_position = dict()
+    before_page = -1
+    num = 1
+    while True:
+        find_random_word(hwp = hwp, size = 10.0)
+        current_page = hwp.XHwpDocuments.Item(0).XHwpDocumentInfo.CurrentPage
+        if before_page < current_page:
+            field_position[hwp.GetPos()] = "problem"
+            hwp.HAction.Run("MovePageDown")
+            hwp.HAction.Run("MoveUp")
+            before_page += 1
+            sleep(0.1)
+        else:
+            break
+
+    for position in sorted(field_position.keys()):
+        hwp.SetPos(*position)
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("Move")
+        hwp.HAction.Run("MoveLeft")
+        add_field(hwp = hwp, field_name = f"{num}번문제")
+        sleep(0.1)
+        num += 1
+
+    hwp.MovePos(2)
+    field_position_2 = dict()
+    num2 = 1
+    for _ in range(num):
+        find_random_word(hwp = hwp, size = 7.0)
+        field_position_2[hwp.GetPos()] = "solution"
+        hwp.HAction.Run("MovePageDown")
+        sleep(0.1)
+
+    for position in sorted(field_position_2.keys()):
+        hwp.SetPos(*position)
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("Move")
+        hwp.HAction.Run("MoveLeft")
+        add_field(hwp = hwp, field_name = f"{num2}번풀이")
+        sleep(0.1)
+        num2 += 1
+    hwp.Save()
+
+def get_current_pos(hwp, source : str):
+    hwp.Open(f"{source}")
+    current_position = hwp.GetPos()
+    return current_position
+
+def get_current_keyindicator(hwp, source : str):
+    hwp.Open(f"{source}")
+    keyindicator = hwp.KeyIndicator()
+    return keyindicator
+
+def add_problem_number_basefile(hwp, problem_array , file : str):
+    hwp.Open(rf'{file}')
+    field_list = [x for x in hwp.GetFieldList().split("\x02") if ('번호' in x)]
+    field_list = [x for x in field_list if (int(x.replace("번풀이번호", "").replace("번문제번호", "")) < len(problem_array)+1)]
+    for field in field_list:
+        hwp.MoveToField(field)
+        write_text(hwp, str(problem_array[int(field[0])-1]))
+
 def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only_problem : bool = False):
     """
     # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사하는 함수입니다. \n
@@ -49,7 +119,6 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
     # copy_problem은 문제를, copy_solution은 풀이를 복사하는 함수입니다. \n
     # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!! \n
     """
-    hwp.Open(rf'{source}')
     # 오류 처리 구문
     if os.path.exists(source) == False:
         raise Exception("문제저장용 파일이 존재하지 않습니다!")
@@ -88,14 +157,6 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
         hwp.HAction.Run("Copy")
         hwp.HAction.Run("MoveDown")
         sleep(0.2)
-
-def add_problem_number_basefile(hwp, problem_array , file : str):
-    hwp.Open(rf'{file}')
-    field_list = [x for x in hwp.GetFieldList().split("\x02") if ('번호' in x)]
-    field_list = [x for x in field_list if (int(x.replace("번풀이번호", "").replace("번문제번호", "")) < len(problem_array)+1)]
-    for field in field_list:
-        hwp.MoveToField(field)
-        write_text(hwp, str(problem_array[int(field[0])-1]))
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
     hwp.Open(rf'{source}')
@@ -149,18 +210,19 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
 def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
     dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
+    # print(problems)
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
     for i in range(problems.shape[0]):
         problem_set = problems.iloc[i]
         src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
         # print(src)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
-        print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
+        print(f"{dst_problem_number_for_field[i]}번 입력중...({i+1}번째 입력)")
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
         hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
-        print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
+        print(f"{dst_problem_number_for_field[i]}번 입력완료! ({i+1}번째 입력완료)")
         hwp.Save()
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
@@ -223,68 +285,15 @@ def new_basefile_no_number(file_name : str):
     new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp'
     return new_file
 
-def add_field(hwp, field_name):
-    hwp.HAction.GetDefault("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
-    hwp.HParameterSet.HInsertFieldTemplate.TemplateDirection = field_name
-    hwp.HParameterSet.HInsertFieldTemplate.TemplateName = field_name
-    hwp.HAction.Execute("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
-
-
-def add_field_source_file(hwp, source : str):
-    hwp.Open(f"{source}")
-    hwp.MovePos(2)
-    field_position = dict()
-    before_page = -1
-    num = 1
-    while True:
-        find_random_word(hwp = hwp, size = 10.0)
-        current_page = hwp.XHwpDocuments.Item(0).XHwpDocumentInfo.CurrentPage
-        if before_page < current_page:
-            field_position[hwp.GetPos()] = "problem"
-            hwp.HAction.Run("MovePageDown")
-            hwp.HAction.Run("MoveUp")
-            before_page += 1
-            sleep(0.1)
-        else:
-            break
-
-    for position in sorted(field_position.keys()):
-        hwp.SetPos(*position)
-        hwp.HAction.Run("SelectAll")
-        hwp.HAction.Run("Move")
-        hwp.HAction.Run("MoveLeft")
-        add_field(hwp = hwp, field_name = f"{num}번문제")
-        sleep(0.1)
-        num += 1
-
-    hwp.MovePos(2)
-    field_position_2 = dict()
-    num2 = 1
-    for _ in range(num):
-        find_random_word(hwp = hwp, size = 7.0)
-        field_position_2[hwp.GetPos()] = "solution"
-        hwp.HAction.Run("MovePageDown")
-        sleep(0.1)
-
-    for position in sorted(field_position_2.keys()):
-        hwp.SetPos(*position)
-        hwp.HAction.Run("SelectAll")
-        hwp.HAction.Run("Move")
-        hwp.HAction.Run("MoveLeft")
-        add_field(hwp = hwp, field_name = f"{num2}번풀이")
-        sleep(0.1)
-        num2 += 1
-    hwp.Save()
-
-def get_current_pos(hwp, source : str):
-    hwp.Open(f"{source}")
-    current_position = hwp.GetPos()
-    return current_position
-
-def get_current_keyindicator(hwp, source : str):
-    hwp.Open(f"{source}")
-    keyindicator = hwp.KeyIndicator()
-    return keyindicator
+def basefile_to_source(hwp, basefile : str, grade_number, destination, destination_number):
+    test_name = hwp.GetFieldText("검토용파일이름")
+    if os.path.exists(basefile) == False:
+        raise Exception("문제저장용 파일이 존재하지 않습니다!")
+    hwp.Open(rf'{basefile}')
+    field_list = hwp.GetFieldList().split("\x02")
+    field_list_problem_number = [x for x in field_list if "번문제번호" in x]
+    field_list_solution_number = [x for x in field_list if "번풀이번호" in x]
+    print(hwp.GetFieldText("1번문제번호"))
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
