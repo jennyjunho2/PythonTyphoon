@@ -35,6 +35,18 @@ def find_random_word(hwp, size, direction = "Forward"):
     hwp.HParameterSet.HFindReplace.FindType = 1
     hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
 
+def find_change_word(hwp, direction = "Forward"):
+    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+    hwp.HParameterSet.HFindReplace.FindCharShape.TextColor = hwp.RGBColor(255, 0, 0)
+    hwp.HParameterSet.HFindReplace.FindCharShape.Height = hwp.PointToHwpUnit(30.0)
+    hwp.HParameterSet.HFindReplace.FindCharShape.FindString = "\\z"
+    hwp.HParameterSet.HFindReplace.FindCharShape.Direction = hwp.FindDir(direction);
+    hwp.HParameterSet.HFindReplace.FindCharShape.WholeWordOnly = 1
+    hwp.HParameterSet.HFindReplace.FindCharShape.FindRegExp = 1
+    hwp.HParameterSet.HFindReplace.FindCharShape.IgnoreMessage = 1
+    hwp.HParameterSet.HFindReplace.FindCharShape.FindType = 1
+    hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
+
 def write_text(hwp, text : str):
     hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
     hwp.HParameterSet.HInsertText.Text = text
@@ -285,15 +297,125 @@ def new_basefile_no_number(file_name : str):
     new_file = os.getcwd() + rf'\태풍\{file_name}_검토용파일_(문제+답지).hwp'
     return new_file
 
-def basefile_to_source(hwp, basefile : str, grade_number, destination, destination_number):
-    test_name = hwp.GetFieldText("검토용파일이름")
-    if os.path.exists(basefile) == False:
-        raise Exception("문제저장용 파일이 존재하지 않습니다!")
+def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
     hwp.Open(rf'{basefile}')
+    # 검토용파일 존재하는지 검사
+    if os.path.exists(basefile) == False:
+        raise Exception("검토용파일이 존재하지 않습니다!")
+
+    test_name = hwp.GetFieldText("검토용파일이름")
+    print(test_name+" 반영 진행중...")
+    problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     field_list = hwp.GetFieldList().split("\x02")
     field_list_problem_number = [x for x in field_list if "번문제번호" in x]
     field_list_solution_number = [x for x in field_list if "번풀이번호" in x]
-    print(hwp.GetFieldText("1번문제번호"))
+    field_list_change_problem_number = []
+    field_list_change_solution_number = []
+
+    for field_problem_number in field_list_problem_number:
+        hwp.MoveToField(field_problem_number, start = False)
+        hwp.HAction.Run("SelectAll")
+        if hwp.CharShape.Item("TextColor") == 255: # 빨간색일 경우
+            hwp.HAction.Run("MoveLeft")
+            field_list_change_problem_number.append(hwp.GetCurFieldName())
+        else:
+            pass
+
+    for field_solution_number in field_list_solution_number:
+        hwp.MoveToField(field_solution_number, start=False)
+        hwp.HAction.Run("SelectAll")
+        if hwp.CharShape.Item("TextColor") == 255: # 빨간색일 경우
+            hwp.HAction.Run("MoveLeft")
+            field_list_change_solution_number.append(hwp.GetCurFieldName())
+        else:
+            pass
+    field_list_change_problem_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
+    field_list_change_solution_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
+    # print(field_list_change_problem_number)
+    # print(field_list_change_solution_number)
+    problem_change_problem = problems.iloc[field_list_change_problem_number]
+    problem_change_solution = problems.iloc[field_list_change_solution_number]
+    # print(problem_change_problem)
+    # print(problem_change_solution)
+    for i in range(problem_change_problem.shape[0]):
+        problem_change_problem_set = problem_change_problem.iloc[i]
+        src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name = test_name)
+        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
+        print(f"{field_list_change_problem_number[i]+1}번문제 반영중...({i+1}번째 입력)")
+        hwp.Open(rf'{basefile}')
+        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제", start = True)
+        start_pos = hwp.GetPos()
+        hwp.Run("Cancel")
+        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제", start = False)
+        end_pos = hwp.GetPos()
+        hwp.Run("Cancel")
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.HAction.Run("Copy")
+        hwp.HAction.Run("MoveDown")
+
+        hwp.Open(rf"{problem_directory}")
+        if os.path.exists(problem_directory) == False:
+            raise Exception(f"{field_list_change_problem_number[i]+1}번문제 문제저장용 파일이 존재하지 않습니다!")
+        hwp.MoveToField(f"{src[1]}번문제")
+        hwp.HAction.Run("MoveRight")
+        start_pos = hwp.GetPos()
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("MoveRight")
+        end_pos = hwp.GetPos()
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.Run("DeleteBack")
+        hwp.SetPos(*start_pos)
+        hwp.Run("Paste")
+        #출처 삽입
+        hwp.HAction.Run("BreakPara")
+        hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
+        hwp.HParameterSet.HInsertText.Text = test_name
+        hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
+        hwp.HAction.Run("StyleShortcut6")
+        # hwp.Save()
+        print(f"{field_list_change_problem_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
+        sleep(0.2)
+
+    for i in range(problem_change_solution.shape[0]):
+        problem_change_solution_set = problem_change_solution.iloc[i]
+        src = array_to_problem_directory(problem_change_solution_set, grade=grade_number, test_name = test_name)
+        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
+        print(f"{field_list_change_solution_number[i]+1}번문제 반영중...({i+1}번째 입력)")
+        hwp.Open(rf'{basefile}')
+        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이", start = True)
+        start_pos = hwp.GetPos()
+        hwp.Run("Cancel")
+        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이", start = False)
+        end_pos = hwp.GetPos()
+        hwp.Run("Cancel")
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.HAction.Run("Copy")
+        hwp.HAction.Run("MoveDown")
+
+        hwp.Open(rf"{problem_directory}")
+        if os.path.exists(problem_directory) == False:
+            raise Exception(f"{field_list_change_solution_number[i]+1}번문제 문제저장용 파일이 존재하지 않습니다!")
+        hwp.MoveToField(f"{src[1]}번풀이")
+        hwp.HAction.Run("MoveRight")
+        start_pos = hwp.GetPos()
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("MoveRight")
+        end_pos = hwp.GetPos()
+        hwp.SetPos(*start_pos)
+        hwp.Run("Select")
+        hwp.SetPos(*end_pos)
+        hwp.Run("DeleteBack")
+        hwp.SetPos(*start_pos)
+        hwp.Run("Paste")
+        # hwp.Save()
+        print(f"{field_list_change_solution_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
+        sleep(0.2)
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'

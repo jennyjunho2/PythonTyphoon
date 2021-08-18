@@ -24,9 +24,11 @@ directory = os.getcwd()
 problem_directory = directory + r'\문제저장용'
 problem_directory_test = directory + r'\문제저장용'
 excel_test = directory + r'\태풍\내신주문서.xlsx'
+excel_test_2 = directory+ r'\태풍\시험1.xlsx'
 testbench_fieldtest = directory + r'\태풍\testbench_fieldtest.hwp'
 testbench_fieldtest2 = directory + r'\태풍\testbench_fieldtest2.hwp'
 testbench_fieldtest3 = directory + r'\태풍\testbench_fieldtest3.hwp'
+testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 #############################
 
@@ -59,4 +61,4 @@ grade_number = 1 # 고1
 
 # Test Code 4
 # 검토용파일 수정사항을 문제저장용에 반영
-basefile_to_source(hwp = hwp, basefile=r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\testbench_반영test.hwp")
+basefile_to_source(hwp = hwp, basefile=testbench_basefiletest, grade_number = grade_number, excel = excel_test_2)
