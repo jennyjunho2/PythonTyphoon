@@ -17,7 +17,6 @@ def init_hwp():
     hwp.HAction.Execute("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
     return hwp
 
-
 hwp = init_hwp()
 #############################
 directory = os.getcwd()
