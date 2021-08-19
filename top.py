@@ -1,11 +1,6 @@
 import win32com.client as win32
 from datetime import datetime as dt
 from source_to_basefile import *
-from basefile_to_exam import *
-import pandas as pd
-import os
-import shutil
-from read_excel import *
 from directory_source import *
 
 def init_hwp():

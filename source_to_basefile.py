@@ -2,6 +2,7 @@ import os
 import shutil
 from time import sleep
 from read_excel import *
+from datetime import datetime as dt
 
 """
 # 본 모듈은 문제저장용 파일에서 베이스파일로 가져올 때 사용하는 모듈입니다.
@@ -220,6 +221,7 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     sleep(0.2)
 
 def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
+    start_time = dt.now()
     dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     # print(problems)
@@ -241,6 +243,9 @@ def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : 
         hwp.Save()
     hwp.Save()
     sleep(0.2)
+    end_time = dt.now()
+    elapsed_time = end_time - start_time
+    print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
 
 def source_to_problem_change_basefile(hwp, excel : str, grade_number : int, test_name_from : str, test_name_to : str):
     dst = new_basefile_no_number(test_name_to)
@@ -298,6 +303,7 @@ def new_basefile_no_number(file_name : str):
     return new_file
 
 def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
+    start_time = dt.now()
     hwp.Open(rf'{basefile}')
     # 검토용파일 존재하는지 검사
     if os.path.exists(basefile) == False:
@@ -331,12 +337,8 @@ def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
             pass
     field_list_change_problem_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
     field_list_change_solution_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
-    # print(field_list_change_problem_number)
-    # print(field_list_change_solution_number)
     problem_change_problem = problems.iloc[field_list_change_problem_number]
     problem_change_solution = problems.iloc[field_list_change_solution_number]
-    # print(problem_change_problem)
-    # print(problem_change_solution)
     for i in range(problem_change_problem.shape[0]):
         problem_change_problem_set = problem_change_problem.iloc[i]
         src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name = test_name)
@@ -371,12 +373,7 @@ def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
         hwp.SetPos(*start_pos)
         hwp.Run("Paste")
         #출처 삽입
-        hwp.HAction.Run("BreakPara")
-        hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
-        hwp.HParameterSet.HInsertText.Text = test_name
-        hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
-        hwp.HAction.Run("StyleShortcut6")
-        # hwp.Save()
+        hwp.Save()
         print(f"{field_list_change_problem_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
         sleep(0.2)
 
@@ -413,9 +410,31 @@ def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
         hwp.Run("DeleteBack")
         hwp.SetPos(*start_pos)
         hwp.Run("Paste")
-        # hwp.Save()
+        hwp.Save()
         print(f"{field_list_change_solution_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
         sleep(0.2)
+
+    for j in range(problems.shape[0]):
+        problem_problem_set = problems.iloc[j]
+        src = array_to_problem_directory(problem_problem_set, grade=grade_number, test_name=test_name)
+        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
+        print(f"{j + 1}번문제 출처표시중...({j + 1}번째 입력)")
+        hwp.Open(rf"{src[0]}")
+        hwp.MoveToField(f"{src[1]}번문제")
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("MoveRight")
+        hwp.HAction.Run("BreakPara")
+        hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
+        hwp.HParameterSet.HInsertText.Text = test_name
+        hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
+        hwp.HAction.Run("StyleShortcut6")
+        hwp.Save()
+        print(f"{j + 1}번문제 반영완료! ({j + 1}번째 입력)")
+
+    end_time = dt.now()
+    elapsed_time = end_time - start_time
+    print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
