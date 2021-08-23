@@ -1,6 +1,5 @@
 import win32com.client as win32
 from source_to_basefile import *
-from directory_source import *
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
@@ -11,7 +10,7 @@ def init_hwp():
     return hwp
 hwp = init_hwp()
 """
-이 파일을 이용해서 작업해주세요.
+임시로 이 파일을 이용해서 작업해주세요.
 문의사항은
 - a01032208149@gmail.com
 또는

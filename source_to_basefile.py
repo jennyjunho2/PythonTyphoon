@@ -234,8 +234,8 @@ def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : 
         print(f"{dst_problem_number_for_field[i]}번 입력중...({i+1}번째 입력)")
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
-        hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
-        hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else dst_problem_number)
+        hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else int(dst_problem_number))
+        hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else int(dst_problem_number))
         print(f"{dst_problem_number_for_field[i]}번 입력완료! ({i+1}번째 입력완료)")
         hwp.Save()
     if basefile == True:
@@ -414,6 +414,12 @@ def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
         print(f"{field_list_change_solution_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
         sleep(0.2)
 
+    end_time = dt.now()
+    elapsed_time = end_time - start_time
+    print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
+def source_reference(hwp, excel, grade_number, test_name):
+    problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     for j in range(problems.shape[0]):
         problem_problem_set = problems.iloc[j]
         src = array_to_problem_directory(problem_problem_set, grade=grade_number, test_name=test_name)
@@ -429,12 +435,7 @@ def basefile_to_source(hwp, basefile : str, grade_number, excel = None):
         hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
         hwp.HAction.Run("StyleShortcut6")
         hwp.Save()
-        print(f"{j + 1}번문제 반영완료! ({j + 1}번째 입력)")
-
-    end_time = dt.now()
-    elapsed_time = end_time - start_time
-    print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
-
+        print(f"{j + 1}번문제 출처표시완료! ({j + 1}번째 입력)")
 
 if __name__ == "__main__":
     excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
