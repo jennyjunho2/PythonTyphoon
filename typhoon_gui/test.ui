@@ -65,12 +65,12 @@
       <string>3. 검토용파일 이름을 입력해주세요.</string>
      </property>
     </widget>
-    <widget class="QTextEdit" name="test_name">
+    <widget class="QTextEdit" name="QTextEdit_test_name">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>290</y>
-       <width>521</width>
+       <width>531</width>
        <height>31</height>
       </rect>
      </property>
@@ -139,7 +139,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QTextEdit" name="QTextEdit_excel_directory">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>70</y>
        <width>521</width>
        <height>31</height>
@@ -184,7 +184,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>120</y>
        <width>551</width>
        <height>41</height>
       </rect>
@@ -238,7 +238,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QProgressBar" name="progressBar">
      <property name="geometry">
       <rect>
-       <x>630</x>
+       <x>610</x>
        <y>400</y>
        <width>461</width>
        <height>23</height>
@@ -264,18 +264,256 @@ p, li { white-space: pre-wrap; }
     <widget class="QTextBrowser" name="textBrowser_progress">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>610</x>
        <y>0</y>
        <width>441</width>
        <height>381</height>
       </rect>
      </property>
     </widget>
+    <zorder>groupBox_grade</zorder>
+    <zorder>textBrowser_progress</zorder>
+    <zorder>QTextEdit_test_name</zorder>
+    <zorder>label_fourth</zorder>
+    <zorder>progressBar</zorder>
+    <zorder>verticalScrollBar</zorder>
+    <zorder>QTextEdit_excel_directory</zorder>
+    <zorder>label_second</zorder>
+    <zorder>label_first</zorder>
+    <zorder>label_third</zorder>
+    <zorder>pushButton_execute</zorder>
    </widget>
    <widget class="QWidget" name="second_tab">
     <attribute name="title">
      <string>(2) 검토용파일 반영/출처 표시</string>
     </attribute>
+    <widget class="QGroupBox" name="groupBox_grade_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>170</y>
+       <width>281</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>나눔고딕</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>학년</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter|Qt::AlignTop</set>
+     </property>
+     <widget class="QRadioButton" name="radioButton_grade1_3">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>20</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>고1</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_grade2_3">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>20</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>고2</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QTextBrowser" name="textBrowser_progress_3">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>0</y>
+       <width>441</width>
+       <height>381</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="QTextEdit_test_name_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>290</y>
+       <width>531</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ex)&lt;/span&gt; 함수의 극한~함수의 그래프 (210828)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_fourth_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>330</y>
+       <width>691</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>나눔고딕</family>
+       <pointsize>22</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>4. 제작!</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="progressBar_3">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>400</y>
+       <width>461</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+    <widget class="QScrollBar" name="verticalScrollBar_3">
+     <property name="geometry">
+      <rect>
+       <x>1080</x>
+       <y>0</y>
+       <width>16</width>
+       <height>371</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="QTextEdit_excel_directory_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>521</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Gulim'; font-weight:600;&quot;&gt;ex)&lt;/span&gt;&lt;span style=&quot; font-family:'Gulim';&quot;&gt; C:\Season\검토용파일.xls&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_second_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>551</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>나눔고딕</family>
+       <pointsize>22</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>2. 학년을 선택해주세요.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_first_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>691</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>나눔고딕</family>
+       <pointsize>22</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>1. 주문서(엑셀) 파일 경로를 입력해주세요.</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_execute_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>380</y>
+       <width>281</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>검토용파일 제작하기!</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_third_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>691</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>나눔고딕</family>
+       <pointsize>22</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>3. 검토용파일 이름을 입력해주세요.</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
