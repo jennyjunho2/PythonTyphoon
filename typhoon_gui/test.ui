@@ -38,7 +38,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="first_tab">
     <attribute name="title">
@@ -49,7 +49,7 @@
       <rect>
        <x>10</x>
        <y>240</y>
-       <width>691</width>
+       <width>611</width>
        <height>41</height>
       </rect>
      </property>
@@ -151,6 +151,12 @@ p, li { white-space: pre-wrap; }
        <pointsize>9</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;pre style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; background-color:#ffffff;&quot;&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808; background-color:#ffffff;&quot;&gt;엑셀파일의 경로를 입력해주면 됩니다&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;.&lt;br/&gt;Ex) excel = r&amp;quot;C:\Users\Season\Desktop\&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;내신주문서&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;.xlsx&amp;quot;&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;경로를 쉽게 따오는 방법은 해당 파일을 누르고 &lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;(Shift+F10)&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;을 누르고 &lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;A&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;를 누르면 경로가 자동으로 복사됩니다&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;.&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;만약 엑셀파일을 내신주문서 대신 해당 부분만 따로 떼서 하실 경우 &lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;고&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;1 2021&amp;quot; &lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;또는 &lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;고&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;2 2021&amp;quot; &lt;/span&gt;&lt;span style=&quot; font-family:'맑은 고딕'; font-size:9.8pt; color:#080808;&quot;&gt;로 시트 이름을 바꾸어 주세요&lt;/span&gt;&lt;span style=&quot; font-family:'JetBrains Mono','monospace'; font-size:9.8pt; color:#080808;&quot;&gt;.&lt;/span&gt;&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="toolTipDuration">
+      <number>5000</number>
+     </property>
      <property name="html">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -206,7 +212,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>691</width>
+       <width>611</width>
        <height>41</height>
       </rect>
      </property>
@@ -235,38 +241,34 @@ p, li { white-space: pre-wrap; }
       <string>검토용파일 제작하기!</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="progressBar">
+    <widget class="QProgressBar" name="progressbar">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>640</x>
        <y>400</y>
-       <width>461</width>
+       <width>451</width>
        <height>23</height>
       </rect>
      </property>
      <property name="value">
-      <number>24</number>
+      <number>0</number>
      </property>
-    </widget>
-    <widget class="QScrollBar" name="verticalScrollBar">
-     <property name="geometry">
-      <rect>
-       <x>1080</x>
-       <y>0</y>
-       <width>16</width>
-       <height>371</height>
-      </rect>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QTextBrowser" name="textBrowser_progress">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>640</x>
        <y>0</y>
-       <width>441</width>
+       <width>451</width>
        <height>381</height>
       </rect>
      </property>
@@ -275,8 +277,7 @@ p, li { white-space: pre-wrap; }
     <zorder>textBrowser_progress</zorder>
     <zorder>QTextEdit_test_name</zorder>
     <zorder>label_fourth</zorder>
-    <zorder>progressBar</zorder>
-    <zorder>verticalScrollBar</zorder>
+    <zorder>progressbar</zorder>
     <zorder>QTextEdit_excel_directory</zorder>
     <zorder>label_second</zorder>
     <zorder>label_first</zorder>
@@ -338,9 +339,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QTextBrowser" name="textBrowser_progress_3">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>640</x>
        <y>0</y>
-       <width>441</width>
+       <width>451</width>
        <height>381</height>
       </rect>
      </property>
@@ -386,33 +387,23 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>4. 제작!</string>
+      <string>4. 반영 및 출처표시!</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="progressBar_3">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>640</x>
        <y>400</y>
-       <width>461</width>
+       <width>451</width>
        <height>23</height>
       </rect>
      </property>
      <property name="value">
       <number>24</number>
      </property>
-    </widget>
-    <widget class="QScrollBar" name="verticalScrollBar_3">
-     <property name="geometry">
-      <rect>
-       <x>1080</x>
-       <y>0</y>
-       <width>16</width>
-       <height>371</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QTextEdit" name="QTextEdit_excel_directory_3">
@@ -477,7 +468,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>1. 주문서(엑셀) 파일 경로를 입력해주세요.</string>
+      <string>1. 검토용파일 경로를 입력해주세요.</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_execute_3">
@@ -514,6 +505,11 @@ p, li { white-space: pre-wrap; }
       <string>3. 검토용파일 이름을 입력해주세요.</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>쪽</string>
+    </attribute>
    </widget>
   </widget>
  </widget>

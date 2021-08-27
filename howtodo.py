@@ -1,9 +1,10 @@
 import win32com.client as win32
 from source_to_basefile import *
+
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = True
+    hwp.XHwpWindows.Item(0).Visible = False
     hwp.HAction.GetDefault("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
     hwp.HParameterSet.HViewProperties.ZoomType = hwp.HwpZoomType("FitPage")
     hwp.HAction.Execute("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
