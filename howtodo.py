@@ -19,7 +19,7 @@ hwp = init_hwp()
 """
 
 # 1. 주문서(엑셀)을 통해 검토용파일 제작하기
-source_to_problem_execute(hwp = hwp, excel = r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\시험1.xls", grade_number = 2, test_name = "1번  집합~함수 (강서) (210828)")
+# source_to_problem_execute(hwp = hwp, excel = r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\시험1.xls", grade_number = 2, test_name = "1번  집합~함수 (강서) (210828)")
 
 #2. 검토용파일 수정 이후 반영 및 출처표시하기
-# basefile_to_source(hwp = hwp, basefile = r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\testbench_basefiletest.hwp", grade_number = 1, excel = r"C:\Users\Season\Desktop\내신주문서.xlsx")
+basefile_to_source(hwp = hwp, basefile = r"C:\Users\Season\Desktop\자동화\210828_고1 1 원의 방정식~명제 (신목)_검토용파일_수정완료.hwp", grade_number = 1, excel = r"C:\Users\Season\Desktop\자동화\임시 엑셀.xls")

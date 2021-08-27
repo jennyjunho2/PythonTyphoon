@@ -6,16 +6,32 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from source_to_basefile import *
 
-def new_basefile_gui(file_name : str):
+def new_basefile_gui(file_name : str, grade_number):
+    file_name_date = file_name[file_name.find("(")+1:file_name.find(")")]
+    file_name_count = file_name[file_name.find("번")-2] if '번' in file_name else 0
+    file_name = file_name.replace(f"({file_name_date})", "").replace("")
+    if file_name_count != 0:
+        file_copy_directory = str(file_name_date)+"_" + str(grade_number) +" "+ str(file_name_count) + file_name + str("_검토용파일_(문제+답지).hwp")
+    else:
+        file_copy_directory = str(file_name_date)+"_" +str(grade_number) + " " + file_name + str("_검토용파일_(문제+답지).hwp")
     source_directory = r"D:\PythonTyphoon\태풍\기출_문제+답지_원본_2문제씩_번호o.hwp"
-    shutil.copyfile(source_directory, rf'D:\PythonTyphoon\태풍\{file_name}_검토용파일_(문제+답지).hwp')
-    new_file = rf'D:\PythonTyphoon\태풍\{file_name}_검토용파일_(문제+답지).hwp'
+    shutil.copyfile(source_directory, file_copy_directory)
+    new_file = file_copy_directory
     return new_file
 
-def new_basefile_no_number_gui(file_name : str):
+def new_basefile_no_number_gui(file_name : str, grade_number):
+    file_name_date = file_name[file_name.find("(") + 1:file_name.find(")")]
+    file_name_count = file_name[file_name.find("번") - 2] if '번' in file_name else 0
+    file_name = file_name.replace(f"({file_name_date})", "").replace("")
+    if file_name_count != 0:
+        file_copy_directory = str(file_name_date) + "_" + str(grade_number) + " " + str(
+            file_name_count) + file_name + str("_검토용파일_(문제+답지).hwp")
+    else:
+        file_copy_directory = str(file_name_date) + "_" + str(grade_number) + " " + file_name + str(
+            "_검토용파일_(문제+답지).hwp")
     source_directory = r"D:\PythonTyphoon\태풍\기출_문제+답지_원본_2문제씩_번호x.hwp"
-    shutil.copyfile(source_directory, rf'D:\PythonTyphoon\태풍\{file_name}_검토용파일_(문제+답지).hwp')
-    new_file = rf'D:\PythonTyphoon\태풍\{file_name}_검토용파일_(문제+답지).hwp'
+    shutil.copyfile(source_directory, file_copy_directory)
+    new_file = file_copy_directory
     return new_file
 
 def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
@@ -63,7 +79,7 @@ hwp = init_hwp()
 class WindowClass(QDialog) :
     def __init__(self) :
         super().__init__()
-        self.ui = uic.loadUi("test.ui", self)
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon("icon.png"))
         self.pushButton_execute.clicked.connect(self.execute_function)
