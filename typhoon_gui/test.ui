@@ -38,7 +38,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="first_tab">
     <attribute name="title">
@@ -365,7 +365,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>10</x>
        <y>290</y>
-       <width>491</width>
+       <width>511</width>
        <height>31</height>
       </rect>
      </property>
@@ -401,10 +401,10 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>4. 반영 및 출처표시!</string>
+      <string>4. 반영!</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="progressBar_2">
+    <widget class="QProgressBar" name="progressbar_2">
      <property name="geometry">
       <rect>
        <x>640</x>
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>20</x>
        <y>70</y>
-       <width>491</width>
+       <width>501</width>
        <height>31</height>
       </rect>
      </property>
@@ -519,44 +519,10 @@ p, li { white-space: pre-wrap; }
       <string>3. 검토용파일 이름을 입력해주세요.</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>350</y>
-       <width>151</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>나눔고딕</family>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>출처표시까지?</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_reference">
-     <property name="geometry">
-      <rect>
-       <x>380</x>
-       <y>390</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pushButton_find_excel_2">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>530</x>
        <y>70</y>
        <width>101</width>
        <height>31</height>
