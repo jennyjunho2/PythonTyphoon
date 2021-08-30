@@ -5,16 +5,19 @@ from PyQt5 import uic
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from source_to_basefile import *
+import shutil
+
+r"C:\Users\Season\Desktop\자동화\\"
 
 def new_basefile_gui(file_name : str, grade_number):
     file_name_date = file_name[file_name.find("(")+1:file_name.find(")")]
     file_name_count = file_name[file_name.find("번")-2] if '번' in file_name else 0
     file_name = file_name.replace(f"({file_name_date})", "").replace("")
     if file_name_count != 0:
-        file_copy_directory = str(file_name_date)+"_" + str(grade_number) +" "+ str(file_name_count) + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+"_" + str(grade_number) +" "+ str(file_name_count) + file_name + str("_검토용파일.hwp")
     else:
-        file_copy_directory = str(file_name_date)+"_" +str(grade_number) + " " + file_name + str("_검토용파일.hwp")
-    source_directory = r"D:\PythonTyphoon\태풍\기출_문제+답지_원본_2문제씩_번호o.hwp"
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+"_" +str(grade_number) + " " + file_name + str("_검토용파일.hwp")
+    source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호o.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
@@ -22,12 +25,12 @@ def new_basefile_gui(file_name : str, grade_number):
 def new_basefile_no_number_gui(file_name : str, grade_number):
     file_name_date = file_name[file_name.find("(") + 1:file_name.find(")")]
     file_name_count = file_name[file_name.find("번") - 2] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace("")
+    file_name = file_name.replace(f"({file_name_date})", "").replace("번", "")
     if file_name_count != 0:
-        file_copy_directory = str(file_name_date) + "_" + str(grade_number) + " " + str(file_name_count) + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + "_" + str(grade_number) + " " + str(file_name_count) + file_name + str("_검토용파일.hwp")
     else:
-        file_copy_directory = str(file_name_date) + "_" + str(grade_number) + " " + file_name + str("_검토용파일.hwp")
-    source_directory = r"D:\PythonTyphoon\태풍\기출_문제+답지_원본_2문제씩_번호x.hwp"
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + "_" + str(grade_number) + " " + file_name + str("_검토용파일.hwp")
+    source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
@@ -39,7 +42,7 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.progressbar.setValue(progress)
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
-    dst = new_basefile_gui(test_name) if basefile == False else new_basefile_no_number_gui(test_name)
+    dst = new_basefile_gui(test_name, grade_number = grade_number) if basefile == False else new_basefile_no_number_gui(test_name, grade_number = grade_number)
     for i in range(problems.shape[0]):
         myWindow.appendTextFunction(string=f"{dst_problem_number_for_field[i]}번 입력중...({i + 1}번째 입력)")
         problem_set = problems.iloc[i]
@@ -200,8 +203,8 @@ hwp = init_hwp()
 class WindowClass(QDialog) :
     def __init__(self) :
         super().__init__()
-        # self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        self.ui = uic.loadUi("test.ui", self)
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        # self.ui = uic.loadUi("test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon("icon.png"))
         self.pushButton_execute.clicked.connect(self.execute_function)
@@ -240,16 +243,16 @@ class WindowClass(QDialog) :
             source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
             self.pushButton_execute.setEnabled(True)
             hwp.Quit()
-        except OSError:
-            myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요.")
+        except OSError as e:
+            myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요. : " + str(e))
             self.pushButton_execute.setEnabled(True)
             hwp.Quit()
-        except UnboundLocalError:
-            myWindow.appendTextFunction(string = "학년을 선택해주세요.")
+        except UnboundLocalError as e:
+            myWindow.appendTextFunction(string = "학년을 선택해주세요. : " + str(e))
             self.pushButton_execute.setEnabled(True)
             hwp.Quit()
         except ValueError:
-           myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요.")
+           myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요. : " + str(e))
            self.pushButton_execute.setEnabled(True)
            hwp.Quit()
         except Exception as e:
