@@ -6,6 +6,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from source_to_basefile import *
 import shutil
+import time
 
 r"C:\Users\Season\Desktop\자동화\\"
 
@@ -49,6 +50,7 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
         src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
+        time.sleep(2)
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
         hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
@@ -56,6 +58,7 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
         hwp.Save()
         progress += (100 // problems.shape[0])
         myWindow.progressbar.setValue(progress)
+        time.sleep(2)
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
 
@@ -125,6 +128,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
         hwp.HAction.Run("MoveDown")
 
         hwp.Open(rf"{problem_directory}")
+        time.sleep(2)
         if os.path.exists(problem_directory) == False:
             raise Exception(f"{field_list_change_problem_number[i]+1}번문제 문제저장용 파일이 존재하지 않습니다!")
         hwp.MoveToField(f"{src[1]}번문제")
@@ -239,6 +243,7 @@ class WindowClass(QDialog) :
         excel_directory = self.QTextEdit_excel_directory.toPlainText().strip('""')
         test_name = self.QTextEdit_test_name.toPlainText().strip('""')
         try:
+            sleep(5)
             self.pushButton_execute.setEnabled(False)
             source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
             self.pushButton_execute.setEnabled(True)
