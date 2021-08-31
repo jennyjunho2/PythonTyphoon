@@ -13,7 +13,7 @@ r"C:\Users\Season\Desktop\자동화\\"
 def new_basefile_gui(file_name : str, grade_number):
     file_name_date = file_name[file_name.find("(")+1:file_name.find(")")]
     file_name_count = file_name[file_name.find("번")-2] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace("")
+    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}", "")
     if file_name_count != 0:
         file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+"_" + str(grade_number) +" "+ str(file_name_count) + file_name + str("_검토용파일.hwp")
     else:
@@ -25,14 +25,14 @@ def new_basefile_gui(file_name : str, grade_number):
 
 def new_basefile_no_number_gui(file_name : str, grade_number):
     file_name_date = file_name[file_name.find("(") + 1:file_name.find(")")]
-    file_name_count = file_name[file_name.find("번") - 2] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace("번", "")
+    file_name_count = file_name[file_name.find("번")-1] if '번' in file_name else 0
+    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "")
     if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + "_" + str(grade_number) + " " + str(file_name_count) + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count)+ "_"+ file_name + str("_검토용파일.hwp")
     else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + "_" + str(grade_number) + " " + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + file_name + str("_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
-    shutil.copyfile(source_directory, file_copy_directory)
+    # shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
 
@@ -198,16 +198,15 @@ def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
     hwp.XHwpWindows.Item(0).Visible = False
-    hwp.HAction.GetDefault("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
-    hwp.HParameterSet.HViewProperties.ZoomType = hwp.HwpZoomType("FitPage")
-    hwp.HAction.Execute("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
     return hwp
+############################################################################################################################
 hwp = init_hwp()
 
 class WindowClass(QDialog) :
     def __init__(self) :
         super().__init__()
         self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        self.ui.closeEvent = self.closeEvent
         # self.ui = uic.loadUi("test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon("icon.png"))
@@ -216,6 +215,8 @@ class WindowClass(QDialog) :
         self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
         self.pushButton_find_excel_2.clicked.connect(self.get_save_file_name_2)
 
+    def closeEvent(self, event):
+        self.hwp.Quit()
 
     def getText_excel_directory(self):
         excel_directory = self.QTextEdit_excel_directory.toPlainText()
@@ -245,6 +246,7 @@ class WindowClass(QDialog) :
         try:
             sleep(5)
             self.pushButton_execute.setEnabled(False)
+            hwp = init_hwp()
             source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
             self.pushButton_execute.setEnabled(True)
             hwp.Quit()
@@ -256,7 +258,7 @@ class WindowClass(QDialog) :
             myWindow.appendTextFunction(string = "학년을 선택해주세요. : " + str(e))
             self.pushButton_execute.setEnabled(True)
             hwp.Quit()
-        except ValueError:
+        except ValueError as e:
            myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요. : " + str(e))
            self.pushButton_execute.setEnabled(True)
            hwp.Quit()
@@ -314,13 +316,14 @@ class WindowClass(QDialog) :
            self.pushButton_execute_2.setEnabled(True)
            hwp.Quit()
 
-
-
-if __name__ == "__main__" :
+def main():
     app = QApplication(sys.argv)
     myWindow = WindowClass()
     myWindow.show()
     try:
         app.exec_()
     except:
-        myWindow.appendTextFunction("종료중...")
+        print("종료중...")
+
+if __name__ == "__main__" :
+    main()
