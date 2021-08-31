@@ -32,7 +32,7 @@ def new_basefile_no_number_gui(file_name : str, grade_number):
     else:
         file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + file_name + str("_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
-    # shutil.copyfile(source_directory, file_copy_directory)
+    shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
 
@@ -209,7 +209,7 @@ class WindowClass(QDialog) :
         self.ui.closeEvent = self.closeEvent
         # self.ui = uic.loadUi("test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowIcon(QIcon("rC:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
         self.pushButton_execute.clicked.connect(self.execute_function)
         self.pushButton_execute_2.clicked.connect(self.execute_function_2)
         self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
@@ -316,7 +316,7 @@ class WindowClass(QDialog) :
            self.pushButton_execute_2.setEnabled(True)
            hwp.Quit()
 
-def main():
+if __name__ == "__main__" :
     app = QApplication(sys.argv)
     myWindow = WindowClass()
     myWindow.show()
@@ -324,6 +324,3 @@ def main():
         app.exec_()
     except:
         print("종료중...")
-
-if __name__ == "__main__" :
-    main()
