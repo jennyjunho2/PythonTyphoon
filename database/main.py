@@ -6,7 +6,8 @@ def init_hwp():
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
     hwp.XHwpWindows.Item(0).Visible = True
     return hwp
-def extract_eqn(hwp):  # 이전 포스팅에서 소개한, 수식 추출방법을 함수로 정의
+
+def extract_eqn(hwp):
     Act = hwp.CreateAction("EquationModify")
     Set = Act.CreateSet()
     Pset = Set.CreateItemSet("EqEdit", "EqEdit")
@@ -15,8 +16,8 @@ def extract_eqn(hwp):  # 이전 포스팅에서 소개한, 수식 추출방법�
 
 hwp = init_hwp()
 hwp.Open(r"D:\PythonTyphoon\database\testbench_databasetest.hwp")
-eqn_dict = {}  # 사전 형식의 자료 생성 예정
-ctrl = hwp.HeadCtrl  # 첫 번째 컨트롤(HeadCtrl)부터 탐색 시작.
+eqn_dict = {}
+ctrl = hwp.HeadCtrl
 
 while ctrl != None:  # 끝까지 탐색을 마치면 ctrl이 None을 리턴하므로.
     nextctrl = ctrl.Next  # 미리 nextctrl을 지정해 두고,
