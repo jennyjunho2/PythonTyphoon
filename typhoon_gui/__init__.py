@@ -249,23 +249,18 @@ class WindowClass(QDialog) :
             hwp = init_hwp()
             source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
             self.pushButton_execute.setEnabled(True)
-            hwp.Quit()
         except OSError as e:
             myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요. : " + str(e))
             self.pushButton_execute.setEnabled(True)
-            hwp.Quit()
         except UnboundLocalError as e:
             myWindow.appendTextFunction(string = "학년을 선택해주세요. : " + str(e))
             self.pushButton_execute.setEnabled(True)
-            hwp.Quit()
         except ValueError as e:
            myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요. : " + str(e))
            self.pushButton_execute.setEnabled(True)
-           hwp.Quit()
         except Exception as e:
            myWindow.appendTextFunction(string="오류가 발생했습니다 : " + str(e))
            self.pushButton_execute.setEnabled(True)
-           hwp.Quit()
 
 ################################################################################################################
 
@@ -298,23 +293,18 @@ class WindowClass(QDialog) :
             self.pushButton_execute.setEnabled(False)
             basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, grade_number= grade_number)
             self.pushButton_execute_2.setEnabled(True)
-            hwp.Quit()
         except OSError:
             myWindow.appendTextFunction_2(string = "검토용파일 경로를 확인해주세요.")
             self.pushButton_execute_2.setEnabled(True)
-            hwp.Quit()
         except UnboundLocalError:
             myWindow.appendTextFunction_2(string = "학년을 선택해주세요.")
             self.pushButton_execute_2.setEnabled(True)
-            hwp.Quit()
         except ValueError:
            myWindow.appendTextFunction_2(string = "학년과 시험지 이름을 확인해주세요.")
            self.pushButton_execute_2.setEnabled(True)
-           hwp.Quit()
         except Exception as e:
            myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
            self.pushButton_execute_2.setEnabled(True)
-           hwp.Quit()
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
