@@ -7,30 +7,31 @@ from PyQt5.QtGui import QIcon
 from source_to_basefile import *
 import shutil
 import time
-
-r"C:\Users\Season\Desktop\자동화\\"
+import re
 
 def new_basefile_gui(file_name : str, grade_number):
-    file_name_date = file_name[file_name.find("(")+1:file_name.find(")")]
+    file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+    file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
     file_name_count = file_name[file_name.find("번")-2] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}", "")
+    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
     if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+"_" + str(grade_number) +" "+ str(file_name_count) + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school) + file_name[1:].strip() + str("_검토용파일.hwp")
     else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+"_" +str(grade_number) + " " + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) + file_name[1:].strip() + str("_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호o.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
 
 def new_basefile_no_number_gui(file_name : str, grade_number):
-    file_name_date = file_name[file_name.find("(") + 1:file_name.find(")")]
+    file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+    file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
     file_name_count = file_name[file_name.find("번")-1] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "")
+    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
     if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count)+ "_"+ file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"_" + file_name[1:].strip() + str("_검토용파일.hwp")
     else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + file_name + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"_"+ file_name[1:].strip() + str("_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
@@ -41,7 +42,9 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.appendTextFunction(string = f"{test_name} 제작 시작")
     progress = 0
     myWindow.progressbar.setValue(progress)
+    myWindow.appendTextFunction(string = "엑셀 로딩중...")
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
+    myWindow.appendTextFunction(string = "엑셀 로딩 완료")
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
     dst = new_basefile_gui(test_name, grade_number = grade_number) if basefile == False else new_basefile_no_number_gui(test_name, grade_number = grade_number)
     for i in range(problems.shape[0]):
@@ -209,7 +212,7 @@ class WindowClass(QDialog) :
         self.ui.closeEvent = self.closeEvent
         # self.ui = uic.loadUi("test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
-        self.setWindowIcon(QIcon("rC:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
+        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
         self.pushButton_execute.clicked.connect(self.execute_function)
         self.pushButton_execute_2.clicked.connect(self.execute_function_2)
         self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
@@ -225,8 +228,8 @@ class WindowClass(QDialog) :
         test_name = self.QTextEdit_test_name.toPlainText()
 
     def appendTextFunction(self, string) :
-        QCoreApplication.processEvents()
         self.textBrowser_progress.append(rf"{string}")
+        QCoreApplication.processEvents()
 
     def get_save_file_name(self):
         file_filter = 'Data File (*.xlsx *.xls)'
@@ -271,8 +274,8 @@ class WindowClass(QDialog) :
         test_name = self.QTextEdit_test_name_2.toPlainText()
 
     def appendTextFunction_2(self, string):
-        QCoreApplication.processEvents()
         self.textBrowser_progress_2.append(rf"{string}")
+        QCoreApplication.processEvents()
 
     def get_save_file_name_2(self):
         file_filter = '한글 파일 (*.hwp)'

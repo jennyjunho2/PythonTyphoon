@@ -17,8 +17,9 @@ from time import sleep
 # 만든이 : 이준호(a01032208149@gmail.com)
 """
 
-root_directory = r"\\172.30.1.22\기출시험지"
+# root_directory = r"\\172.30.1.22\기출시험지"
 # root_directory = os.getcwd()
+root_directory = r"C:\Users\Season\Desktop\기출시험지 배포용"
 directory_source = {
     '1-1-1-1' : root_directory + r"\문제저장용\고1\1. 다항식\1. 다항식의 연산\1. 고1_다항식_다항식의 연산_최상.hwp",
     '1-1-1-2' : root_directory + r"\문제저장용\고1\1. 다항식\1. 다항식의 연산\2. 고1_다항식_다항식의 연산_상.hwp",
