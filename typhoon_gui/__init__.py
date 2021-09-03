@@ -29,9 +29,9 @@ def new_basefile_no_number_gui(file_name : str, grade_number):
     file_name_count = file_name[file_name.find("번")-1] if '번' in file_name else 0
     file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
     if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"_" + file_name[1:].strip() + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"(" + file_name[1:].strip() + str(")_검토용파일.hwp")
     else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"_"+ file_name[1:].strip() + str("_검토용파일.hwp")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"("+ file_name[1:].strip() + str(")_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
