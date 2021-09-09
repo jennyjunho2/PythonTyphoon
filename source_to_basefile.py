@@ -3,6 +3,7 @@ import shutil
 from time import sleep
 from read_excel import *
 from datetime import datetime as dt
+from api import *
 
 """
 # 본 모듈은 문제저장용 파일에서 베이스파일로 가져올 때 사용하는 모듈입니다.
@@ -15,49 +16,6 @@ replace_question_to_number = { '서답형1' : 41,'서답형2' : 42, '서답형3'
                             '서술형1' : 51,'서술형2' : 52, '서술형3' : 53, '서술형4' : 54, '서술형5' : 55, '서술형6' : 56, '서술형7' : 57, '서술형8' : 58, '서술형9' : 59, '서술형10' : 60}
 replace_number_to_question = {41 : '서1', 42 : '서2', 43 : '서3',44 : '서4',45 : '서5',46 : '서6',47 : '서7', 48 : '서8', 49 : '서9', 50 : '서10',
                               51 : '서1', 52 : '서2', 53 : '서3',54 : '서4',55 : '서5',56 : '서6',57 : '서7', 58 : '서8', 59 : '서9', 60 : '서10'}
-
-def find_word(hwp, word, size, direction="Forward"):
-    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-    hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir(direction)
-    hwp.HParameterSet.HFindReplace.FindCharShape.Height = hwp.PointToHwpUnit(size)
-    hwp.HParameterSet.HFindReplace.FindString = word
-    hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
-    hwp.HParameterSet.HFindReplace.FindType = 1
-    hwp.HParameterSet.HFindReplace.SeveralWords = 1
-    hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-
-def find_random_word(hwp, size, direction = "Forward"):
-    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-    hwp.HParameterSet.HFindReplace.FindCharShape.Height = hwp.PointToHwpUnit(size)
-    hwp.HParameterSet.HFindReplace.FindString = "\\k"
-    hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir(direction)
-    hwp.HParameterSet.HFindReplace.FindRegExp = 1
-    hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
-    hwp.HParameterSet.HFindReplace.FindType = 1
-    hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-
-def find_change_word(hwp, direction = "Forward"):
-    hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-    hwp.HParameterSet.HFindReplace.FindCharShape.TextColor = hwp.RGBColor(255, 0, 0)
-    hwp.HParameterSet.HFindReplace.FindCharShape.Height = hwp.PointToHwpUnit(30.0)
-    hwp.HParameterSet.HFindReplace.FindCharShape.FindString = "\\z"
-    hwp.HParameterSet.HFindReplace.FindCharShape.Direction = hwp.FindDir(direction)
-    hwp.HParameterSet.HFindReplace.FindCharShape.WholeWordOnly = 1
-    hwp.HParameterSet.HFindReplace.FindCharShape.FindRegExp = 1
-    hwp.HParameterSet.HFindReplace.FindCharShape.IgnoreMessage = 1
-    hwp.HParameterSet.HFindReplace.FindCharShape.FindType = 1
-    hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-
-def write_text(hwp, text : str):
-    hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
-    hwp.HParameterSet.HInsertText.Text = text
-    hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
-
-def add_field(hwp, field_name):
-    hwp.HAction.GetDefault("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
-    hwp.HParameterSet.HInsertFieldTemplate.TemplateDirection = field_name
-    hwp.HParameterSet.HInsertFieldTemplate.TemplateName = field_name
-    hwp.HAction.Execute("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
 
 def add_field_source_file(hwp, source : str):
     hwp.Open(f"{source}")
@@ -104,16 +62,6 @@ def add_field_source_file(hwp, source : str):
         sleep(0.1)
         num2 += 1
     hwp.Save()
-
-def get_current_pos(hwp, source : str):
-    hwp.Open(f"{source}")
-    current_position = hwp.GetPos()
-    return current_position
-
-def get_current_keyindicator(hwp, source : str):
-    hwp.Open(f"{source}")
-    keyindicator = hwp.KeyIndicator()
-    return keyindicator
 
 def add_problem_number_basefile(hwp, problem_array , file : str):
     hwp.Open(rf'{file}')
