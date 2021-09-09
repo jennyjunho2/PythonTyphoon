@@ -1,5 +1,5 @@
 # HWP파일에서 자주 사용하는 함수 정리
-import win32.client as win32
+import win32com.client as win32
 
 def find_word(hwp, word, size, direction="Forward"):
     hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
