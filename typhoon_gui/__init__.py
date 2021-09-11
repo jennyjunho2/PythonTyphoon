@@ -10,8 +10,10 @@ import time
 import re
 
 def new_basefile_gui(file_name : str, grade_number):
-    file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
-    file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
+    try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+    except AttributeError: file_name_date = ""
+    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
+    except AttributeError: file_name_school = ""
     file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
     file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
     if file_name_count != 0:
@@ -24,8 +26,10 @@ def new_basefile_gui(file_name : str, grade_number):
     return new_file
 
 def new_basefile_no_number_gui(file_name : str, grade_number):
-    file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
-    file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
+    try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+    except AttributeError: file_name_date = ""
+    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
+    except AttributeError: file_name_school = ""
     file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
     file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
     if file_name_count != 0:
@@ -53,7 +57,6 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
         src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
-        time.sleep(2)
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
         hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
@@ -61,7 +64,6 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
         hwp.Save()
         progress += (100 // problems.shape[0])
         myWindow.progressbar.setValue(progress)
-        time.sleep(2)
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
 
@@ -206,11 +208,12 @@ def init_hwp():
 hwp = init_hwp()
 
 class WindowClass(QDialog) :
+    first_click = True
     def __init__(self) :
         super().__init__()
-        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        # self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        self.ui = uic.loadUi("test.ui", self)
         self.ui.closeEvent = self.closeEvent
-        # self.ui = uic.loadUi("test.ui", self)
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
         self.pushButton_execute.clicked.connect(self.execute_function)
@@ -247,7 +250,7 @@ class WindowClass(QDialog) :
         excel_directory = self.QTextEdit_excel_directory.toPlainText().strip('""')
         test_name = self.QTextEdit_test_name.toPlainText().strip('""')
         try:
-            sleep(5)
+            sleep(2)
             self.pushButton_execute.setEnabled(False)
             hwp = init_hwp()
             source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)

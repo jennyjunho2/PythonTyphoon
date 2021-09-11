@@ -1,5 +1,6 @@
 import win32com.client as win32
 from time import sleep
+import hml_equation_parser as hp
 
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
@@ -31,26 +32,27 @@ while ctrl != None:  # 끝까지 탐색을 마치면 ctrl이 None을 리턴하�
     ctrl = nextctrl  # 다음 컨트롤 탐색
 hwp.Run("Cancel")  # 완료했으면 선택해제
 
-"""dict를 가지고 수식 삽입하기"""
-
-for position, eqn_string in eqn_dict.items():
-    hwp.HAction.GetDefault("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
-    hwp.HParameterSet.HEqEdit.EqFontName = "HancomEQN"
-    hwp.HParameterSet.HEqEdit.string = eqn_string
-    hwp.HParameterSet.HEqEdit.BaseUnit = hwp.PointToHwpUnit(10.0)  # 수식 폰트 크기 : 30
-    hwp.HAction.Execute("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)  # 폰트이상함
-    sleep(1)  # 시연을 위해 1초 멈춤
-    hwp.FindCtrl()  # 다시 선택
-    hwp.HAction.GetDefault("EquationPropertyDialog", hwp.HParameterSet.HShapeObject.HSet)
-    hwp.HParameterSet.HShapeObject.HSet.SetItem("ShapeType", 3)
-    hwp.HParameterSet.HShapeObject.Version = "Equation Version 60"
-    hwp.HParameterSet.HShapeObject.EqFontName = "HancomEQN"
-    hwp.HParameterSet.HShapeObject.HSet.SetItem("ApplyTo", 0)
-    hwp.HParameterSet.HShapeObject.HSet.SetItem("TreatAsChar", 1)
-    hwp.HAction.Execute("EquationPropertyDialog", hwp.HParameterSet.HShapeObject.HSet)
-    hwp.Run("Cancel")  # 폰트 예뻐짐
-    hwp.Run("MoveRight")  # 다음 수식 삽입 준비
-    sleep(1)  # 시연을 위해 1초 멈춤
-
 for key, value in eqn_dict.items():
     print(f"{key} : {value}")
+
+"""dict를 가지고 수식 삽입하기"""
+
+# for position, eqn_string in eqn_dict.items():
+#     hwp.HAction.GetDefault("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
+#     hwp.HParameterSet.HEqEdit.EqFontName = "HancomEQN"
+#     hwp.HParameterSet.HEqEdit.string = eqn_string
+#     hwp.HParameterSet.HEqEdit.BaseUnit = hwp.PointToHwpUnit(10.0)  # 수식 폰트 크기 : 30
+#     hwp.HAction.Execute("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)  # 폰트이상함
+#     sleep(1)  # 시연을 위해 1초 멈춤
+#     hwp.FindCtrl()  # 다시 선택
+#     hwp.HAction.GetDefault("EquationPropertyDialog", hwp.HParameterSet.HShapeObject.HSet)
+#     hwp.HParameterSet.HShapeObject.HSet.SetItem("ShapeType", 3)
+#     hwp.HParameterSet.HShapeObject.Version = "Equation Version 60"
+#     hwp.HParameterSet.HShapeObject.EqFontName = "HancomEQN"
+#     hwp.HParameterSet.HShapeObject.HSet.SetItem("ApplyTo", 0)
+#     hwp.HParameterSet.HShapeObject.HSet.SetItem("TreatAsChar", 1)
+#     hwp.HAction.Execute("EquationPropertyDialog", hwp.HParameterSet.HShapeObject.HSet)
+#     hwp.Run("Cancel")  # 폰트 예뻐짐
+#     hwp.Run("MoveRight")  # 다음 수식 삽입 준비
+#     sleep(1)  # 시연을 위해 1초 멈춤
+

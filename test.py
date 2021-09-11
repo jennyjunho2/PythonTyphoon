@@ -7,9 +7,6 @@ def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
     hwp.XHwpWindows.Item(0).Visible = True
-    hwp.HAction.GetDefault("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
-    hwp.HParameterSet.HViewProperties.ZoomType = hwp.HwpZoomType("FitPage")
-    hwp.HAction.Execute("ViewZoom", hwp.HParameterSet.HViewProperties.HSet)
     return hwp
 
 hwp = init_hwp()
@@ -26,6 +23,11 @@ testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 #############################
 
+hwp.Run("FileNew")
 
-hwp.Open(r"C:\Users\Season\Desktop\기출시험지 배포용\문제저장용\고2\4. 함수의 극한과 연속\2. 함수의 연속\4. 고2_함수의 극한과 연속_함수의 연속_하_문제+답지.hwp")
-print(hwp.GetFieldList().split("\x02"))
+
+dst = hwp.XHwpDocuments.Item(0)
+src = hwp.XHwpDocuments.Item(1)
+
+src.SetActive_XHwpDocument()
+dst.SetActive_XHwpDocument()
