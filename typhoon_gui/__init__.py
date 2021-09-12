@@ -67,6 +67,10 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
 
+    new_field_list = hwp.GetFieldList().split("\x02")
+    for field in new_field_list:
+        hwp.MoveToField(f"{field}")
+        hwp.HAction.Run("DeleteField")
     hwp.Save()
     sleep(0.2)
     end_time = dt.now()

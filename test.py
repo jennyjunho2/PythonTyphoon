@@ -23,11 +23,8 @@ testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 #############################
 
-hwp.Run("FileNew")
-
-
-dst = hwp.XHwpDocuments.Item(0)
-src = hwp.XHwpDocuments.Item(1)
-
-src.SetActive_XHwpDocument()
-dst.SetActive_XHwpDocument()
+hwp.Open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\testbench_fieldtest2.hwp")
+hwp.MoveToField('1번문제')
+hwp.HAction.Run("DeleteField")
+hwp.MoveToField('1번풀이')
+hwp.HAction.Run("DeleteField")
