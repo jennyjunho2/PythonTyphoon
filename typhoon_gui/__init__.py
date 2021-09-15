@@ -5,6 +5,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from source_to_basefile import *
+from api import *
 import shutil
 import time
 import re
@@ -39,6 +40,13 @@ def new_basefile_no_number_gui(file_name : str, grade_number):
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
+    hwp.Open(f"{new_file}")
+    hwp.MoveToField("검토용파일제목")
+    insert_text(f"{str(grade_number)} ")
+    circle_word(f"{str(file_name_count)} ")
+    insert_text(f"{str(file_name_school)}")
+    hwp.Save()
+    hwp.Quit()
     return new_file
 
 def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
@@ -206,7 +214,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = False
+    hwp.XHwpWindows.Item(0).Visible = True
     return hwp
 ############################################################################################################################
 hwp = init_hwp()
@@ -215,8 +223,8 @@ class WindowClass(QDialog) :
     first_click = True
     def __init__(self) :
         super().__init__()
-        # self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        self.ui = uic.loadUi("test.ui", self)
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        # self.ui = uic.loadUi("test.ui", self)
         self.ui.closeEvent = self.closeEvent
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
