@@ -31,11 +31,6 @@ def find_change_word(hwp, direction = "Forward"):
     hwp.HParameterSet.HFindReplace.FindCharShape.FindType = 1
     hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
 
-def write_text(hwp, text : str):
-    hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
-    hwp.HParameterSet.HInsertText.Text = text
-    hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
-
 def add_field(hwp, field_name):
     hwp.HAction.GetDefault("InsertFieldTemplate", hwp.HParameterSet.HInsertFieldTemplate.HSet)
     hwp.HParameterSet.HInsertFieldTemplate.TemplateDirection = field_name
@@ -52,21 +47,21 @@ def get_current_pos(hwp, source : str):
     current_position = hwp.GetPos()
     return current_position
 
-def circle_word(hwp, string):
+def circle_word(hwp, string : str):
     hwp.HAction.GetDefault("ComposeChars", hwp.HParameterSet.HChCompose.HSet)
-    hwp.CharShapes.CircleCharShape.FontTypeHangul = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeLatin = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeHanja = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeJapanese = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeOther = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeSymbol = hwp.FontType("TTF")
-    hwp.CharShapes.CircleCharShape.FontTypeUser = hwp.FontType("TTF")
-    hwp.CircleType = 1
-    hwp.CheckCompose = 0
-    hwp.Chars = string
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeHangul = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeLatin = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeHanja = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeJapanese = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeOther = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeSymbol = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CharShapes.CircleCharShape.FontTypeUser = hwp.FontType("TTF")
+    hwp.HParameterSet.HChCompose.CircleType = 1
+    hwp.HParameterSet.HChCompose.CheckCompose = 0
+    hwp.HParameterSet.HChCompose.Chars = string
     hwp.HAction.Execute("ComposeChars", hwp.HParameterSet.HChCompose.HSet)
 
-def insert_text(hwp, string):
+def insert_text(hwp, string : str):
     hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
     hwp.HParameterSet.HInsertText.Text = string
     hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)

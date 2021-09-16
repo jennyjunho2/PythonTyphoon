@@ -40,13 +40,6 @@ def new_basefile_no_number_gui(file_name : str, grade_number):
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
-    hwp.Open(f"{new_file}")
-    hwp.MoveToField("검토용파일제목")
-    insert_text(f"{str(grade_number)} ")
-    circle_word(f"{str(file_name_count)} ")
-    insert_text(f"{str(file_name_school)}")
-    hwp.Save()
-    hwp.Quit()
     return new_file
 
 def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
@@ -57,6 +50,11 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.appendTextFunction(string = "엑셀 로딩중...")
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     myWindow.appendTextFunction(string = "엑셀 로딩 완료")
+    try: file_name_date = re.search(r"\(([0-9_]+)\)", test_name).group(1)
+    except AttributeError: file_name_date = ""
+    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", test_name).group(1)
+    except AttributeError: file_name_school = ""
+    file_name_count = test_name[:test_name.find("번")] if '번' in test_name else 0
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
     dst = new_basefile_gui(test_name, grade_number = grade_number) if basefile == False else new_basefile_no_number_gui(test_name, grade_number = grade_number)
     for i in range(problems.shape[0]):
@@ -75,10 +73,18 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
 
+    # 제목 넣기
+    hwp.MoveToField("검토용파일제목")
+    insert_text(hwp, string = f"{str(grade_number)} ")
+    circle_word(hwp, string = f"{str(file_name_count)}")
+    insert_text(hwp, string = f" {str(file_name_school)}")
+
+    # 누름틀 삭제
     new_field_list = hwp.GetFieldList().split("\x02")
     for field in new_field_list:
         hwp.MoveToField(f"{field}")
         hwp.HAction.Run("DeleteField")
+
     hwp.Save()
     sleep(0.2)
     end_time = dt.now()
@@ -214,7 +220,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = True
+    hwp.XHwpWindows.Item(0).Visible = False
     return hwp
 ############################################################################################################################
 hwp = init_hwp()
@@ -223,8 +229,8 @@ class WindowClass(QDialog) :
     first_click = True
     def __init__(self) :
         super().__init__()
-        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        # self.ui = uic.loadUi("test.ui", self)
+        # self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        self.ui = uic.loadUi("test.ui", self)
         self.ui.closeEvent = self.closeEvent
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
