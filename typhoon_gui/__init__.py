@@ -10,6 +10,119 @@ import shutil
 import time
 import re
 
+def init_hwp():
+    hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
+    hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
+    hwp.XHwpWindows.Item(0).Visible = False
+    return hwp
+############################################################################################################################
+hwp = init_hwp()
+
+class WindowClass(QDialog) :
+    first_click = True
+    def __init__(self) :
+        super().__init__()
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        # self.ui = uic.loadUi("test.ui", self)
+        self.ui.closeEvent = self.closeEvent
+        self.setWindowTitle("검토용파일 제작 프로그램")
+        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
+        self.pushButton_execute.clicked.connect(self.execute_function)
+        self.pushButton_execute_2.clicked.connect(self.execute_function_2)
+        self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
+        self.pushButton_find_excel_2.clicked.connect(self.get_save_file_name_2)
+
+    def closeEvent(self, event):
+        self.hwp.Quit()
+
+    def getText_excel_directory(self):
+        excel_directory = self.QTextEdit_excel_directory.toPlainText()
+
+    def getText_test_name(self):
+        test_name = self.QTextEdit_test_name.toPlainText()
+
+    def appendTextFunction(self, string) :
+        self.textBrowser_progress.append(rf"{string}")
+        QCoreApplication.processEvents()
+
+    def get_save_file_name(self):
+        file_filter = 'Data File (*.xlsx *.xls)'
+        response = QFileDialog.getSaveFileName(
+            parent = self,
+            caption = "엑셀 파일을 선택해주세요.",
+            filter = file_filter,
+            initialFilter = "Excel File (*.xlsx *.xls)"
+        )
+        self.QTextEdit_excel_directory.setPlainText(response[0])
+
+    def execute_function(self):
+        if self.radioButton_grade1.isChecked() :  grade_number = 1
+        elif self.radioButton_grade2.isChecked() : grade_number = 2
+        excel_directory = self.QTextEdit_excel_directory.toPlainText().strip('""')
+        test_name = self.QTextEdit_test_name.toPlainText().strip('""')
+        try:
+            sleep(2)
+            self.pushButton_execute.setEnabled(False)
+            hwp = init_hwp()
+            source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
+            self.pushButton_execute.setEnabled(True)
+        except OSError as e:
+            myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요. : " + str(e))
+            self.pushButton_execute.setEnabled(True)
+        except UnboundLocalError as e:
+            myWindow.appendTextFunction(string = "학년을 선택해주세요. : " + str(e))
+            self.pushButton_execute.setEnabled(True)
+        except ValueError as e:
+           myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요. : " + str(e))
+           self.pushButton_execute.setEnabled(True)
+        except Exception as e:
+           myWindow.appendTextFunction(string="오류가 발생했습니다 : " + str(e))
+           self.pushButton_execute.setEnabled(True)
+
+################################################################################################################
+
+    def getText_excel_directory_2(self):
+        basefile_directory = self.QTextEdit_excel_directory_2.toPlainText()
+
+    def getText_test_name_2(self):
+        test_name = self.QTextEdit_test_name_2.toPlainText()
+
+    def appendTextFunction_2(self, string):
+        self.textBrowser_progress_2.append(rf"{string}")
+        QCoreApplication.processEvents()
+
+    def get_save_file_name_2(self):
+        file_filter = '한글 파일 (*.hwp)'
+        response = QFileDialog.getSaveFileName(
+            parent = self,
+            caption = "한글 파일을 선택해주세요.",
+            filter = file_filter,
+            initialFilter = "hwp File (*.hwp)"
+        )
+        self.QTextEdit_excel_directory_2.setPlainText(response[0])
+
+    def execute_function_2(self):
+        if self.radioButton_grade1_2.isChecked() :  grade_number = 1
+        elif self.radioButton_grade2_2.isChecked() : grade_number = 2
+        excel_directory = self.QTextEdit_excel_directory_2.toPlainText().strip('""')
+        basefile_directory = self.QTextEdit_test_name_2.toPlainText().strip('""')
+        try:
+            self.pushButton_execute.setEnabled(False)
+            basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, grade_number= grade_number)
+            self.pushButton_execute_2.setEnabled(True)
+        except OSError:
+            myWindow.appendTextFunction_2(string = "검토용파일 경로를 확인해주세요.")
+            self.pushButton_execute_2.setEnabled(True)
+        except UnboundLocalError:
+            myWindow.appendTextFunction_2(string = "학년을 선택해주세요.")
+            self.pushButton_execute_2.setEnabled(True)
+        except ValueError:
+           myWindow.appendTextFunction_2(string = "학년과 시험지 이름을 확인해주세요.")
+           self.pushButton_execute_2.setEnabled(True)
+        except Exception as e:
+           myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
+           self.pushButton_execute_2.setEnabled(True)
+
 def new_basefile_gui(file_name : str, grade_number):
     try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
     except AttributeError: file_name_date = ""
@@ -71,15 +184,30 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     if basefile == True:
         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
 
+    # 남은 페이지 삭제하기
+    needed_page = int(np.ceil(problems.shape[0] / 2))
+    hwp.MovePos(2)
+    for _ in range(needed_page):
+        hwp.HAction.Run("MovePageDown")
+    hwp.MovePos(7)
+    start_pos = hwp.GetPos()
+    hwp.MovePos(3)
+    end_pos = hwp.GetPos()
+    hwp.SetPos(*start_pos)
+    hwp.Run("Select")
+    hwp.SetPos(*end_pos)
+    hwp.HAction.Run("Delete")
+
     # 제목 넣기
     hwp.MoveToField("검토용파일제목")
     insert_text(hwp, string = f"{str(grade_number)} ")
     circle_word(hwp, string = f"{str(file_name_count)}")
     insert_text(hwp, string = f" {str(file_name_school)}")
 
+    new_field_list = hwp.GetFieldList().split("\x02")
 
     # 누름틀 삭제
-    new_field_list = hwp.GetFieldList().split("\x02")
+
     for field in new_field_list:
         hwp.MoveToField(f"{field}")
         hwp.HAction.Run("DeleteField")
@@ -215,119 +343,6 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
     myWindow.appendTextFunction_2(f'반영을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
     myWindow.progressbar_2.setValue(100)
     hwp.Quit()
-
-def init_hwp():
-    hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
-    hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = True
-    return hwp
-############################################################################################################################
-hwp = init_hwp()
-
-class WindowClass(QDialog) :
-    first_click = True
-    def __init__(self) :
-        super().__init__()
-        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        # self.ui = uic.loadUi("test.ui", self)
-        self.ui.closeEvent = self.closeEvent
-        self.setWindowTitle("검토용파일 제작 프로그램")
-        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
-        self.pushButton_execute.clicked.connect(self.execute_function)
-        self.pushButton_execute_2.clicked.connect(self.execute_function_2)
-        self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
-        self.pushButton_find_excel_2.clicked.connect(self.get_save_file_name_2)
-
-    def closeEvent(self, event):
-        self.hwp.Quit()
-
-    def getText_excel_directory(self):
-        excel_directory = self.QTextEdit_excel_directory.toPlainText()
-
-    def getText_test_name(self):
-        test_name = self.QTextEdit_test_name.toPlainText()
-
-    def appendTextFunction(self, string) :
-        self.textBrowser_progress.append(rf"{string}")
-        QCoreApplication.processEvents()
-
-    def get_save_file_name(self):
-        file_filter = 'Data File (*.xlsx *.xls)'
-        response = QFileDialog.getSaveFileName(
-            parent = self,
-            caption = "엑셀 파일을 선택해주세요.",
-            filter = file_filter,
-            initialFilter = "Excel File (*.xlsx *.xls)"
-        )
-        self.QTextEdit_excel_directory.setPlainText(response[0])
-
-    def execute_function(self):
-        if self.radioButton_grade1.isChecked() :  grade_number = 1
-        elif self.radioButton_grade2.isChecked() : grade_number = 2
-        excel_directory = self.QTextEdit_excel_directory.toPlainText().strip('""')
-        test_name = self.QTextEdit_test_name.toPlainText().strip('""')
-        try:
-            sleep(2)
-            self.pushButton_execute.setEnabled(False)
-            hwp = init_hwp()
-            source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
-            self.pushButton_execute.setEnabled(True)
-        except OSError as e:
-            myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요. : " + str(e))
-            self.pushButton_execute.setEnabled(True)
-        except UnboundLocalError as e:
-            myWindow.appendTextFunction(string = "학년을 선택해주세요. : " + str(e))
-            self.pushButton_execute.setEnabled(True)
-        except ValueError as e:
-           myWindow.appendTextFunction(string = "학년과 시험지 이름을 확인해주세요. : " + str(e))
-           self.pushButton_execute.setEnabled(True)
-        except Exception as e:
-           myWindow.appendTextFunction(string="오류가 발생했습니다 : " + str(e))
-           self.pushButton_execute.setEnabled(True)
-
-################################################################################################################
-
-    def getText_excel_directory_2(self):
-        basefile_directory = self.QTextEdit_excel_directory_2.toPlainText()
-
-    def getText_test_name_2(self):
-        test_name = self.QTextEdit_test_name_2.toPlainText()
-
-    def appendTextFunction_2(self, string):
-        self.textBrowser_progress_2.append(rf"{string}")
-        QCoreApplication.processEvents()
-
-    def get_save_file_name_2(self):
-        file_filter = '한글 파일 (*.hwp)'
-        response = QFileDialog.getSaveFileName(
-            parent = self,
-            caption = "한글 파일을 선택해주세요.",
-            filter = file_filter,
-            initialFilter = "hwp File (*.hwp)"
-        )
-        self.QTextEdit_excel_directory_2.setPlainText(response[0])
-
-    def execute_function_2(self):
-        if self.radioButton_grade1_2.isChecked() :  grade_number = 1
-        elif self.radioButton_grade2_2.isChecked() : grade_number = 2
-        excel_directory = self.QTextEdit_excel_directory_2.toPlainText().strip('""')
-        basefile_directory = self.QTextEdit_test_name_2.toPlainText().strip('""')
-        try:
-            self.pushButton_execute.setEnabled(False)
-            basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, grade_number= grade_number)
-            self.pushButton_execute_2.setEnabled(True)
-        except OSError:
-            myWindow.appendTextFunction_2(string = "검토용파일 경로를 확인해주세요.")
-            self.pushButton_execute_2.setEnabled(True)
-        except UnboundLocalError:
-            myWindow.appendTextFunction_2(string = "학년을 선택해주세요.")
-            self.pushButton_execute_2.setEnabled(True)
-        except ValueError:
-           myWindow.appendTextFunction_2(string = "학년과 시험지 이름을 확인해주세요.")
-           self.pushButton_execute_2.setEnabled(True)
-        except Exception as e:
-           myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
-           self.pushButton_execute_2.setEnabled(True)
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
