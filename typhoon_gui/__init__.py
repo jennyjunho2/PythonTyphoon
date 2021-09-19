@@ -50,8 +50,6 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.appendTextFunction(string = "엑셀 로딩중...")
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     myWindow.appendTextFunction(string = "엑셀 로딩 완료")
-    try: file_name_date = re.search(r"\(([0-9_]+)\)", test_name).group(1)
-    except AttributeError: file_name_date = ""
     try: file_name_school = re.search(r"\(([가-힣^,]+)\)", test_name).group(1)
     except AttributeError: file_name_school = ""
     file_name_count = test_name[:test_name.find("번")] if '번' in test_name else 0
@@ -78,6 +76,7 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     insert_text(hwp, string = f"{str(grade_number)} ")
     circle_word(hwp, string = f"{str(file_name_count)}")
     insert_text(hwp, string = f" {str(file_name_school)}")
+
 
     # 누름틀 삭제
     new_field_list = hwp.GetFieldList().split("\x02")
@@ -220,7 +219,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = False
+    hwp.XHwpWindows.Item(0).Visible = True
     return hwp
 ############################################################################################################################
 hwp = init_hwp()
@@ -229,8 +228,8 @@ class WindowClass(QDialog) :
     first_click = True
     def __init__(self) :
         super().__init__()
-        # self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        self.ui = uic.loadUi("test.ui", self)
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        # self.ui = uic.loadUi("test.ui", self)
         self.ui.closeEvent = self.closeEvent
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))

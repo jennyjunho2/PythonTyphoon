@@ -69,7 +69,7 @@ def add_problem_number_basefile(hwp, problem_array , file : str):
     field_list = [x for x in field_list if (int(x.replace("번풀이번호", "").replace("번문제번호", "")) < len(problem_array)+1)]
     for field in field_list:
         hwp.MoveToField(field)
-        write_text(hwp, str(problem_array[int(field[0])-1]))
+        insert_text(hwp, str(problem_array[int(field[0])-1]))
 
 def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only_problem : bool = False):
     """
@@ -164,6 +164,16 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
         raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("Paste")
+
+    # 서식 유지를 위한 실행 코드
+    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HParameterSet.HShapeCopyPaste.type = 2 # 글자 모양과 문단 모양 둘 다 복사
+    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HAction.Run("SelectAll")
+    hwp.HAction.Run("StyleShortcut1")
+    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+
     hwp.HAction.Run("MoveDown")
     hwp.Save()
     sleep(0.2)
