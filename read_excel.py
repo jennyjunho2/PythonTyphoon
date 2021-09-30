@@ -14,6 +14,12 @@ replace_number_to_question = {41 : '서1', 42 : '서2', 43 : '서3',44 : '서4',
                               51 : '서1', 52 : '서2', 53 : '서3',54 : '서4',55 : '서5',56 : '서6',57 : '서7', 58 : '서8', 59 : '서9', 60 : '서10'}
 
 def readexcel(xlsx_path : str, grade : int):
+    """
+    readexcel 함수는 주문서 엑셀을 읽고 해당 학년의 sheet를 DataFrame의 형태로 반환합니다.
+    :param xlsx_path: 엑셀 절대 경로
+    :param grade: 해당 학년
+    :return: DataFrame
+    """
     year = str(datetime.today().year)
     try:
         if grade == 1:
@@ -27,12 +33,26 @@ def readexcel(xlsx_path : str, grade : int):
         print("주문서가 존재하지 않습니다!, 경로를 확인해 주세요.")
 
 def get_problem_list(excel : str, grade : int, test_name : str):
+    """
+    get_problem_list는 주문서에서 해당 테스트에 해당하는 문제와 배점을 DataFrame 형태로 반환합니다.
+    :param excel: 엑셀 절대 경로
+    :param grade: 해당 학년
+    :param test_name: 테스트 이름
+    :return: DataFrame
+    """
     excel_problem_list = readexcel(excel, grade)
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name,
                                                            excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number})
     return excel_problem_list_problem_index.sort_values(by = [test_name])
 
 def array_to_problem_directory(problem_set, grade : int, test_name : str):
+    """
+    대단원, 소단원, 난이도, 번호, 테스트 이름, 배점의 형태를 읽어 이를 hwp 경로로 읽을 수 있게 변환하여주는 함수입니다.
+    :param problem_set: array
+    :param grade: 해당 학년
+    :param test_name: 테스트 이름
+    :return: string(ex. 1-1-1-1)
+    """
     directory_final = []
     problem_set.index = ["대단원", '소단원', '난이도', '번호', test_name, '배점']
     big_lesson_unit, small_lesson_unit, difficulty= problem_set['대단원'].replace(" ", ""), problem_set['소단원'].replace(" ", ""), problem_set['난이도'].replace(" ", "")
@@ -106,6 +126,14 @@ def array_to_problem_directory(problem_set, grade : int, test_name : str):
     return directory_final
 
 def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_to : str):
+    """
+    엑셀 DataFrame에서 두 테스트 간 문제 배열을 비교하여 겹치는 부분과 겹치지 않는 부분을 반환합니다.
+    :param excel: 엑셀 절대 경로
+    :param grade: 해당 학년
+    :param test_name_from: 비교할 시험지 이름
+    :param test_name_to: 비교 및 제작할 시험지 이름
+    :return: 겹치는 부분 array, 겹치지 않는 부분 array
+    """
     excel_problem_list = readexcel(excel, grade)
     excel_problem_list_problem_index = excel_problem_list[['대단원', '소단원', '난이도','번호',test_name_from,
                                                            excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name_from) + 1],

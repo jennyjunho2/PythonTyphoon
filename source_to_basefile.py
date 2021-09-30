@@ -6,7 +6,7 @@ from datetime import datetime as dt
 from api import *
 
 """
-# 본 모듈은 문제저장용 파일에서 베이스파일로 가져올 때 사용하는 모듈입니다.
+# 본 모듈은 문제저장용 파일에서 검토용파일로 가져올 때 사용하는 모듈입니다.
 # 만든이 : 이준호(a01032208149@gmail.com으로 연락주세요 :) )
 """
 
@@ -18,6 +18,11 @@ replace_number_to_question = {41 : '서1', 42 : '서2', 43 : '서3',44 : '서4',
                               51 : '서1', 52 : '서2', 53 : '서3',54 : '서4',55 : '서5',56 : '서6',57 : '서7', 58 : '서8', 59 : '서9', 60 : '서10'}
 
 def add_field_source_file(hwp, source : str):
+    """
+    (미완성) 문제저장용 파일에 각 문제에 필드를 추가하는 함수입니다.
+    :param hwp: hwp 파일 exe
+    :param source: 문제저장용 파일 경로
+    """
     hwp.Open(f"{source}")
     hwp.MovePos(2)
     field_position = dict()
@@ -73,12 +78,11 @@ def add_problem_number_basefile(hwp, problem_array , file : str):
 
 def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only_problem : bool = False):
     """
-    # 문제저장용 파일에서 베이스파일로 문제, 풀이를 복사하는 함수입니다. \n
-    # hwp : 아래아한글 기본파일 \n
-    # source : 문제저장용 파일경로 \n
-    # problem_number : 문제저장용 파일에서 가져올 문제번호 \n
-    # copy_problem은 문제를, copy_solution은 풀이를 복사하는 함수입니다. \n
-    # ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!! \n
+    문제저장용 파일에서 베이스파일로 문제를 복사하는 함수입니다.
+    :param hwp : 아래아한글 기본파일 exe
+    :param source : 문제저장용 파일경로
+    :param problem_number : 문제저장용 파일에서 가져올 문제번호
+    ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
     """
     # 오류 처리 구문
     if os.path.exists(source) == False:
@@ -120,6 +124,13 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
         sleep(0.2)
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
+    """
+    문제저장용 파일에서 베이스파일로 풀이를 복사하는 함수입니다.
+    :param hwp : 아래아한글 기본파일 exe
+    :param source : 문제저장용 파일경로
+    :param problem_number : 문제저장용 파일에서 복사할 풀이번호
+    ★ 문제저장용 파일에 누름틀(Ctrl + K E)이 '1번문제' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
+    """
     hwp.Open(rf'{source}')
     if os.path.exists(source) == False:
         raise Exception("문제저장용 파일이 존재하지 않습니다!")
@@ -135,12 +146,11 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
 
 def source_to_basefile_paste_problem(hwp, destination, problem_number):
     """
-    # 문제저장용 파일에서 검토용파일로 문제, 풀이를 붙여넣기하는 함수입니다.
-    # hwp : 아래아한글 기본파일
-    # destination : 검토용파일 파일경로
-    # problem_number : 검토용파일에 넣을 문제번호
-    # paste_problem은 문제를, paste_solution은 풀이를 복사하는 함수입니다.
-    # ★ 검토용파일에 누름틀(Ctrl + K E)이 '1번문제', '1번풀이' 양식으로 문제의 맨 앞에 지정되야 합니다!!!
+    문제저장용 파일에서 베이스파일로 문제를 붙여넣기하는 함수입니다.
+    :param hwp : 아래아한글 기본파일 exe
+    :param destination : 검토용파일 파일경로
+    :param problem_number : 검토용파일에 붙여넣기할 문제번호
+    ★ 검토용파일에 누름틀(Ctrl + K E)이 '1번문제' 양식으로 들어갈 문제의 맨 앞에 지정되야 합니다!!!
     """
     hwp.Open(rf'{destination}')
     if os.path.exists(destination) == False:
@@ -155,6 +165,13 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     sleep(0.2)
 
 def source_to_basefile_paste_solution(hwp, destination, problem_number):
+    """
+    문제저장용 파일에서 베이스파일로 풀이를 붙여넣기하는 함수입니다.
+    :param hwp: 아래아한글 기본파일 exe
+    :param destination: 검토용파일 파일경로
+    :param problem_number: 검토용파일에 붙여넣기할 풀이번호
+    * 검토용파일에 누름틀(Ctrl + K E)이 '1번풀이' 양식으로 들어갈 풀이의 맨 앞에 지정되야 합니다!!!
+    """
     hwp.Open(rf'{destination}')
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
@@ -178,49 +195,49 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     hwp.Save()
     sleep(0.2)
 
-def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
-    start_time = dt.now()
-    dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
-    problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
-    # print(problems)
-    dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
-    for i in range(problems.shape[0]):
-        problem_set = problems.iloc[i]
-        src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
-        # print(src)
-        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
-        print(f"{dst_problem_number_for_field[i]}번 입력중...({i+1}번째 입력)")
-        source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
-        source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
-        hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
-        hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
-        print(f"{dst_problem_number_for_field[i]}번 입력완료! ({i+1}번째 입력완료)")
-        hwp.Save()
-    if basefile == True:
-        hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
-        hwp.Save()
-    hwp.Save()
-    sleep(0.2)
-    end_time = dt.now()
-    elapsed_time = end_time - start_time
-    print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
-
-def source_to_problem_change_basefile(hwp, excel : str, grade_number : int, test_name_from : str, test_name_to : str):
-    dst = new_basefile_no_number(test_name_to)
-    problems_not_intersect = get_problem_list_change(excel = excel, grade = grade_number, test_name_from = test_name_from, test_name_to = test_name_to)[1]
-    problem_number_list = []
-    for i in range(problems_not_intersect.shape[0]):
-        src = array_to_problem_directory(problems_not_intersect[i, :], grade=grade_number)
-        src_problem_number = problems_not_intersect[i][3]
-        dst_problem_number = i+1
-        print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
-        source_to_basefile_problem(hwp, source=src, source_number=src_problem_number, destination=dst, destination_number=dst_problem_number)
-        source_to_basefile_solution(hwp, source=src, source_number=src_problem_number, destination=dst, destination_number=dst_problem_number)
-        print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
-        problem_number_list.append(int(problems_not_intersect[i][4]))
-    problem_number_list =[replace_number_to_question[x] if int(x) > 40 else int(x) for x in problem_number_list]
-    add_problem_number_basefile(hwp, problem_array = problem_number_list, file = dst)
-    hwp.Save()
+# def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
+#     start_time = dt.now()
+#     dst = new_basefile(test_name) if basefile == False else new_basefile_no_number(test_name)
+#     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
+#     # print(problems)
+#     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
+#     for i in range(problems.shape[0]):
+#         problem_set = problems.iloc[i]
+#         src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name)
+#         # print(src)
+#         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
+#         print(f"{dst_problem_number_for_field[i]}번 입력중...({i+1}번째 입력)")
+#         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
+#         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
+#         hwp.PutFieldText(Field = f"{i+1}번문제번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
+#         hwp.PutFieldText(Field = f"{i+1}번풀이번호", Text = str(replace_number_to_question[int(dst_problem_number)]) if int(dst_problem_number) >= 41 else str(int(dst_problem_number)))
+#         print(f"{dst_problem_number_for_field[i]}번 입력완료! ({i+1}번째 입력완료)")
+#         hwp.Save()
+#     if basefile == True:
+#         hwp.PutFieldText(Field = "검토용파일이름", Text = test_name)
+#         hwp.Save()
+#     hwp.Save()
+#     sleep(0.2)
+#     end_time = dt.now()
+#     elapsed_time = end_time - start_time
+#     print(f'입력을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+#
+# def source_to_problem_change_basefile(hwp, excel : str, grade_number : int, test_name_from : str, test_name_to : str):
+#     dst = new_basefile_no_number(test_name_to)
+#     problems_not_intersect = get_problem_list_change(excel = excel, grade = grade_number, test_name_from = test_name_from, test_name_to = test_name_to)[1]
+#     problem_number_list = []
+#     for i in range(problems_not_intersect.shape[0]):
+#         src = array_to_problem_directory(problems_not_intersect[i, :], grade=grade_number)
+#         src_problem_number = problems_not_intersect[i][3]
+#         dst_problem_number = i+1
+#         print(f"{dst_problem_number}번 입력중...({i+1}번째 입력)")
+#         source_to_basefile_problem(hwp, source=src, source_number=src_problem_number, destination=dst, destination_number=dst_problem_number)
+#         source_to_basefile_solution(hwp, source=src, source_number=src_problem_number, destination=dst, destination_number=dst_problem_number)
+#         print(f"{dst_problem_number}번 입력완료! ({i+1}번째 입력완료)")
+#         problem_number_list.append(int(problems_not_intersect[i][4]))
+#     problem_number_list =[replace_number_to_question[x] if int(x) > 40 else int(x) for x in problem_number_list]
+#     add_problem_number_basefile(hwp, problem_array = problem_number_list, file = dst)
+#     hwp.Save()
 
 def source_to_basefile_problem(hwp, source, source_number, destination, destination_number):
     """
