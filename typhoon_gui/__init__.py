@@ -123,34 +123,26 @@ class WindowClass(QDialog) :
            myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
            self.pushButton_execute_2.setEnabled(True)
 
-def new_basefile_gui(file_name : str, grade_number):
-    try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
-    except AttributeError: file_name_date = ""
-    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
-    except AttributeError: file_name_school = ""
-    file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
-    if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school) + file_name[1:].strip() + str("_검토용파일.hwp")
-    else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) + file_name[1:].strip() + str("_검토용파일.hwp")
-    source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호o.hwp"
-    shutil.copyfile(source_directory, file_copy_directory)
-    new_file = file_copy_directory
-    return new_file
-
 def new_basefile_no_number_gui(file_name : str, grade_number):
-    try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
-    except AttributeError: file_name_date = ""
-    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
-    except AttributeError: file_name_school = ""
-    file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
-    file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
-    if file_name_count != 0:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"(" + file_name[1:].strip() + str(")_검토용파일.hwp")
-    else:
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"("+ file_name[1:].strip() + str(")_검토용파일.hwp")
     source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
+    if "최종마무리" not in file_name:
+        try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+        except AttributeError: file_name_date = ""
+        try: file_name_school = re.search(r"\(([가-힣^,]+)\)", file_name).group(1)
+        except AttributeError: file_name_school = ""
+        file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
+        file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
+        if file_name_count != 0:
+            file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"(" + file_name[1:].strip() + str(")_검토용파일.hwp")
+        else:
+            file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"("+ file_name[1:].strip() + str(")_검토용파일.hwp")
+    else:
+        try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
+        except AttributeError: file_name_date = ""
+        try: file_name_school = re.search(r"[가-힣]{2,3}", file_name).group()
+        except AttributeError: file_name_school = ""
+        file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_school}", "").replace("()", "")
+        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+ f"_고" + str(grade_number) + "_" + str(file_name_school) + " "+ file_name.strip() + str("_검토용파일.hwp")
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
@@ -163,11 +155,9 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.appendTextFunction(string = "엑셀 로딩중...")
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     myWindow.appendTextFunction(string = "엑셀 로딩 완료")
-    try: file_name_school = re.search(r"\(([가-힣^,]+)\)", test_name).group(1)
-    except AttributeError: file_name_school = ""
-    file_name_count = test_name[:test_name.find("번")] if '번' in test_name else 0
+
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
-    dst = new_basefile_gui(test_name, grade_number = grade_number) if basefile == False else new_basefile_no_number_gui(test_name, grade_number = grade_number)
+    dst = new_basefile_no_number_gui(test_name, grade_number = grade_number)
     for i in range(problems.shape[0]):
         myWindow.appendTextFunction(string=f"{dst_problem_number_for_field[i]}번 입력중...({i + 1}번째 입력)")
         problem_set = problems.iloc[i]
@@ -200,14 +190,22 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
 
     # 제목 넣기
     hwp.MoveToField("검토용파일제목")
-    insert_text(hwp, string = f"{str(grade_number)} ")
-    circle_word(hwp, string = f"{str(file_name_count)}")
-    insert_text(hwp, string = f" {str(file_name_school)}")
+    if '최종마무리' not in test_name:
+        try: file_name_school = re.search(r"\(([가-힣^,]+)\)", test_name).group(1)
+        except AttributeError: file_name_school = ""
+        file_name_count = test_name[:test_name.find("번")] if '번' in test_name else 0
+        insert_text(hwp, string = f"{str(grade_number)} ")
+        circle_word(hwp, string = f"{str(file_name_count)}")
+        insert_text(hwp, string = f" {str(file_name_school)}")
+    else:
+        try: file_name_school =re.search(r"[가-힣]{2,3}", test_name).group()
+        except AttributeError: file_name_school = ""
+        insert_text(hwp, string=f"{str(grade_number)} {file_name_school} 최종마무리 ")
+        circle_word(hwp, string = f"{test_name[test_name.find('리')+1]}")
 
     new_field_list = hwp.GetFieldList().split("\x02")
 
     # 누름틀 삭제
-
     for field in new_field_list:
         hwp.MoveToField(f"{field}")
         hwp.HAction.Run("DeleteField")
