@@ -23,8 +23,6 @@ testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 #############################
 
-hwp.Open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\태풍\testbench_fieldtest2.hwp")
-hwp.MoveToField('1번문제')
-hwp.HAction.Run("DeleteField")
-hwp.MoveToField('1번풀이')
-hwp.HAction.Run("DeleteField")
+hwp.Open(r"D:\PythonTyphoon\태풍\testbench_fieldtest2.hwp")
+hwp.MoveToField("1번문제글상자")
+insert_text(hwp, "1번문제글상자 가능?")

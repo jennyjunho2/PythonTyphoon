@@ -19,8 +19,9 @@ from time import sleep
 
 # root_directory = r"\\172.30.1.22\기출시험지"
 # root_directory = os.getcwd()
-root_directory = r"C:\Users\Season\Desktop\기출시험지 배포용"
-directory_source = {
+# root_directory = r"C:\Users\Season\Desktop\기출시험지 배포용"
+def directory_source(key, root_directory):
+    directory_source = {
     '1-1-1-1' : root_directory + r"\문제저장용\고1\1. 다항식\1. 다항식의 연산\1. 고1_다항식_다항식의 연산_최상.hwp",
     '1-1-1-2' : root_directory + r"\문제저장용\고1\1. 다항식\1. 다항식의 연산\2. 고1_다항식_다항식의 연산_상.hwp",
     '1-1-1-3' : root_directory + r"\문제저장용\고1\1. 다항식\1. 다항식의 연산\3. 고1_다항식_다항식의 연산_중.hwp",
@@ -186,12 +187,13 @@ directory_source = {
     '2-6-3-3': root_directory + r"\문제저장용\고2\6. 적분\3. 정적분의 활용\3. 고2_적분_정적분의 활용_중_문제+답지.hwp",
     '2-6-3-4': root_directory + r"\문제저장용\고2\6. 적분\3. 정적분의 활용\4. 고2_적분_정적분의 활용_하_문제+답지.hwp",
 }
+    return directory_source[key]
 
 """
 # find_empty_file 함수는 source의 dictionary에서 파일 경로에 파일이 있는지 검사합니다.
 """
-def find_empty_file(source):
-    for key, val in source.items():
+def find_empty_file(directory):
+    for key, val in directory.items():
         if not os.path.isfile(val):
             print(key)
         else:
