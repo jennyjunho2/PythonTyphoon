@@ -66,6 +66,15 @@ def insert_text(hwp, string : str):
     hwp.HParameterSet.HInsertText.Text = string
     hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
 
+def shape_copy_paste(hwp, type = 2):
+    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HParameterSet.HShapeCopyPaste.type = type  # 글자 모양과 문단 모양 둘 다 복사
+    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HAction.Run("SelectAll")
+    hwp.HAction.Run("StyleShortcut1")
+    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
+
 if __name__ == "__main__":
     import win32com.client as win32
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")

@@ -183,14 +183,7 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
     hwp.HAction.Run("Paste")
 
     # 서식 유지를 위한 실행 코드
-    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
-    hwp.HParameterSet.HShapeCopyPaste.type = 2 # 글자 모양과 문단 모양 둘 다 복사
-    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
-    hwp.HAction.Run("SelectAll")
-    hwp.HAction.Run("StyleShortcut1")
-    hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
-    hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
-
+    shape_copy_paste(hwp)
     hwp.HAction.Run("MoveDown")
     hwp.Save()
     sleep(0.2)

@@ -25,13 +25,16 @@ class WindowClass(QDialog) :
         super().__init__()
         self.setWindowIcon(QIcon(r"icon.png"))
         self.ui = uic.loadUi(r"test.ui", self)
+        self.setFixedSize(1229, 569)
+
         os.chdir("..")
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.ui.closeEvent = self.closeEvent
         self.pushButton_execute.clicked.connect(self.execute_function)
         self.pushButton_execute_2.clicked.connect(self.execute_function_2)
-        self.pushButton_find_excel.clicked.connect(self.get_save_file_name)
-        self.pushButton_find_excel_2.clicked.connect(self.get_save_file_name_2)
+        self.pushButton_find_excel.clicked.connect(self.get_excel_file_name)
+        self.pushButton_find_excel_2.clicked.connect(self.get_excel_file_name_2)
+        self.pushButton_find_hwp_2.clicked.connect(self.get_hwp_file_name_2)
         self.pushButton_change_ip_address.clicked.connect(self.change_ip_address)
         self.get_ip_address()
 
@@ -47,7 +50,7 @@ class WindowClass(QDialog) :
         myWindow.appendTextFunction("IP 주소가 업데이트 되었습니다!")
 
     def closeEvent(self, event):
-        self.hwp.Quit()
+        hwp.Quit()
 
     def getText_excel_directory(self):
         excel_directory = self.QTextEdit_excel_directory.toPlainText()
@@ -59,8 +62,8 @@ class WindowClass(QDialog) :
         self.textBrowser_progress.append(rf"{string}")
         QCoreApplication.processEvents()
 
-    def get_save_file_name(self):
-        file_filter = 'Data File (*.xlsx *.xls)'
+    def get_excel_file_name(self):
+        file_filter = 'Excel File (*.xlsx *.xls)'
         response = QFileDialog.getSaveFileName(
             parent = self,
             caption = "엑셀 파일을 선택해주세요.",
@@ -110,24 +113,40 @@ class WindowClass(QDialog) :
         self.textBrowser_progress_2.append(rf"{string}")
         QCoreApplication.processEvents()
 
-    def get_save_file_name_2(self):
-        file_filter = '한글 파일 (*.hwp)'
+    def get_excel_file_name_2(self):
+        file_filter = 'Excel File (*.xlsx *.xls)'
+        response = QFileDialog.getSaveFileName(
+            parent = self,
+            caption = "엑셀 파일을 선택해주세요.",
+            filter = file_filter,
+            initialFilter = "엑셀 파일 (*.xlsx *.xls)"
+        )
+        self.QTextEdit_excel_directory_2.setPlainText(response[0])
+
+    def get_hwp_file_name_2(self):
+        file_filter = 'Hwp File (*.hwp)'
         response = QFileDialog.getSaveFileName(
             parent = self,
             caption = "한글 파일을 선택해주세요.",
             filter = file_filter,
             initialFilter = "한글 파일 (*.hwp)"
         )
-        self.QTextEdit_excel_directory_2.setPlainText(response[0])
+        self.QTextEdit_hwp_directory_2.setPlainText(response[0])
 
     def execute_function_2(self):
         if self.radioButton_grade1_2.isChecked() :  grade_number = 1
         elif self.radioButton_grade2_2.isChecked() : grade_number = 2
+        if self.checkBox_testmode.isChecked():
+            test_mode = True
+        else:
+            test_mode = False
         excel_directory = self.QTextEdit_excel_directory_2.toPlainText().strip('""')
-        basefile_directory = self.QTextEdit_test_name_2.toPlainText().strip('""')
+        basefile_directory = self.QTextEdit_hwp_directory_2.toPlainText().strip('""')
+        test_name = self.QTextEdit_test_name_2.toPlainText().strip('""')
+        ip_address = self.QTextEdit_ip_address.toPlainText().strip('""')
         try:
             self.pushButton_execute.setEnabled(False)
-            basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, grade_number= grade_number)
+            basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, test_name = test_name, grade_number= grade_number, ip_address = ip_address, test_mode = test_mode)
             self.pushButton_execute_2.setEnabled(True)
         except OSError:
             myWindow.appendTextFunction_2(string = "검토용파일 경로를 확인해주세요.")
@@ -262,20 +281,18 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.progressbar.setValue(100)
     hwp.Quit()
 
-def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, excel = None, reference : bool = False, test_mode : bool = False):
+def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, ip_address : str, excel = None, reference : bool = False, test_mode : bool = False):
     start_time = dt.now()
     hwp.Open(rf'{basefile}')
     # 검토용파일 존재하는지 검사
     if os.path.exists(basefile) == False:
         raise Exception("검토용파일이 존재하지 않습니다!")
-
     if test_mode == False:
         myWindow.appendTextFunction_2(string=f"{basefile} 반영 시작")
     else:
         myWindow.appendTextFunction_2(string=f"{basefile} 반영 시작 (테스트모드)")
     progress = 0
     myWindow.progressbar_2.setValue(progress)
-    test_name = hwp.GetFieldText("검토용파일이름")
     myWindow.appendTextFunction_2(string = test_name+" 반영 진행중...")
     problems = get_problem_list(excel=excel, grade=grade_number, test_name=test_name)
     field_list = hwp.GetFieldList().split("\x02")
@@ -311,10 +328,11 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.appendTextFunction_2(string = f"{field_list_change_problem_number[i]+1}번문제 반영중...({i+1}번째 입력)")
         hwp.Open(rf'{basefile}')
-        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제", start = True)
+        shape_copy_paste(hwp)
+        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제글상자", start = True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
-        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제", start = False)
+        hwp.MoveToField(f"{field_list_change_problem_number[i]+1}번문제글상자", start = False)
         end_pos = hwp.GetPos()
         hwp.Run("Cancel")
         hwp.SetPos(*start_pos)
@@ -323,10 +341,10 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         hwp.HAction.Run("Copy")
         hwp.HAction.Run("MoveDown")
 
-        hwp.Open(rf"{problem_directory}")
-        time.sleep(2)
         if os.path.exists(problem_directory) == False:
             raise Exception(f"{field_list_change_problem_number[i]+1}번문제 문제저장용 파일이 존재하지 않습니다!")
+        hwp.Open(rf"{problem_directory}")
+        time.sleep(5)
         hwp.MoveToField(f"{src[1]}번문제")
         hwp.HAction.Run("MoveRight")
         start_pos = hwp.GetPos()
@@ -341,7 +359,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         hwp.Run("Paste")
         hwp.Save()
         myWindow.appendTextFunction_2(string = f"{field_list_change_problem_number[i] + 1}번문제 반영완료! ({i + 1}번째 입력)")
-        progress += (100 // (problem_change_problem.shape[0]+problem_change_solution))
+        progress += (100 // (problem_change_problem.shape[0]+problem_change_solution.shape[0]))
         myWindow.progressbar_2.setValue(progress)
         sleep(0.2)
 
@@ -351,10 +369,11 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.appendTextFunction_2(string = f"{field_list_change_solution_number[i]+1}번풀이 반영중...({i+1}번째 입력)")
         hwp.Open(rf'{basefile}')
-        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이", start = True)
+        shape_copy_paste(hwp)
+        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이글상자", start = True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
-        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이", start = False)
+        hwp.MoveToField(f"{field_list_change_solution_number[i]+1}번풀이글상자", start = False)
         end_pos = hwp.GetPos()
         hwp.Run("Cancel")
         hwp.SetPos(*start_pos)
@@ -363,9 +382,9 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         hwp.HAction.Run("Copy")
         hwp.HAction.Run("MoveDown")
 
-        hwp.Open(rf"{problem_directory}")
         if os.path.exists(problem_directory) == False:
             raise Exception(f"{field_list_change_solution_number[i]+1}번풀이 문제저장용 파일이 존재하지 않습니다!")
+        hwp.Open(rf"{problem_directory}")
         hwp.MoveToField(f"{src[1]}번풀이")
         hwp.HAction.Run("MoveRight")
         start_pos = hwp.GetPos()
@@ -381,7 +400,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, 
         hwp.Save()
         myWindow.appendTextFunction_2(string = f"{field_list_change_solution_number[i] + 1}번풀이 반영완료! ({i + 1}번째 입력)")
         sleep(0.2)
-        progress += (100 // (problem_change_problem.shape[0] + problem_change_solution))
+        progress += (100 // (problem_change_problem.shape[0] + problem_change_solution.shape[0]))
         myWindow.progressbar_2.setValue(progress)
 
     end_time = dt.now()
