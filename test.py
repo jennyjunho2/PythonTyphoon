@@ -23,6 +23,18 @@ testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 #############################
 
-hwp.Open(r"D:\PythonTyphoon\태풍\testbench_fieldtest2.hwp")
-hwp.MoveToField("1번문제글상자")
-insert_text(hwp, "1번문제글상자 가능?")
+hwp.Open(r"D:\PythonTyphoon\태풍\211005_고1_강서 최종마무리2_검토용파일.hwp")
+ctrl = hwp.HeadCtrl
+while ctrl != None:
+    try:
+        nextctrl = ctrl.Next
+    except:
+        sleep(0.2)
+        nextctrl = ctrl.Next
+    if ctrl.CtrlID == "gso":  # 표의 컨트롤아이디
+        position = ctrl.GetAnchorPos(0)
+        position = position.Item("List"), position.Item("Para"), position.Item("Pos")
+        hwp.SetPos(*position)
+        hwp.HAction.Run("MoveRight")
+        hwp.HAction.Run("ParagraphShapeAlignCenter")
+    ctrl = nextctrl

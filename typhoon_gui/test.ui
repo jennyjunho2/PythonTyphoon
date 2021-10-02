@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1163</width>
-    <height>503</height>
+    <height>531</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -446,7 +446,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Gulim'; font-weight:600;&quot;&gt;ex)&lt;/span&gt;&lt;span style=&quot; font-family:'Gulim';&quot;&gt; C:\Season\검토용파일.xls&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Gulim'; font-weight:600;&quot;&gt;ex)&lt;/span&gt;&lt;span style=&quot; font-family:'Gulim';&quot;&gt; C:\Season\검토용파일.hwp&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_second_2">
@@ -543,7 +543,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_ip_address">
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>730</x>
      <y>20</y>
      <width>231</width>
      <height>21</height>
@@ -609,6 +609,37 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>업데이트</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_testmode">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>445</y>
+     <width>89</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>테스트모드?</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="autoRepeat">
+    <bool>false</bool>
+   </property>
+   <property name="autoExclusive">
+    <bool>false</bool>
+   </property>
+   <property name="tristate">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

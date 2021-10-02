@@ -45,7 +45,7 @@ def get_problem_list(excel : str, grade : int, test_name : str):
                                                            excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number})
     return excel_problem_list_problem_index.sort_values(by = [test_name])
 
-def array_to_problem_directory(problem_set, grade : int, test_name : str, for_release : bool, ip_address = "172.30.1.60"):
+def array_to_problem_directory(problem_set, grade : int, test_name : str, for_release : bool, ip_address = "172.30.1.60", test = False):
     """
     대단원, 소단원, 난이도, 번호, 테스트 이름, 배점의 형태를 읽어 이를 hwp 경로로 읽을 수 있게 변환하여주는 함수입니다.\n
     :param problem_set: array
@@ -123,10 +123,13 @@ def array_to_problem_directory(problem_set, grade : int, test_name : str, for_re
                           '중': 3,
                           '하': 4}
     directory = str(grade)+"-"+str(big_lesson[big_lesson_unit])+'-'+str(small_lesson[small_lesson_unit])+'-'+str(difficulty_number[difficulty])
-    if for_release == True:
-        directory_final.extend((directory_source.directory_source(directory, r"C:\Users\Season\Desktop\기출시험지 배포용"), problem_set['번호'], problem_set[test_name], problem_set['배점']))
+    if test == False:
+        if for_release == True:
+            directory_final.extend((directory_source.directory_source(directory, r"C:\Users\Season\Desktop\기출시험지 배포용"), problem_set['번호'], problem_set[test_name], problem_set['배점']))
+        else:
+            directory_final.extend((directory_source.directory_source(directory, rf"\\{ip_address}\기출시험지"), problem_set['번호'], problem_set[test_name], problem_set['배점']))
     else:
-        directory_final.extend((directory_source.directory_source(directory, rf"\\{ip_address}\기출시험지"), problem_set['번호'], problem_set[test_name], problem_set['배점']))
+        directory_final.extend((directory_source.directory_source(directory, r"D:\PythonTyphoon"), problem_set['번호'], problem_set[test_name], problem_set['배점']))
     return directory_final
 
 def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_to : str):

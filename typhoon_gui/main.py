@@ -72,13 +72,18 @@ class WindowClass(QDialog) :
     def execute_function(self):
         if self.radioButton_grade1.isChecked() :  grade_number = 1
         elif self.radioButton_grade2.isChecked() : grade_number = 2
+        if self.checkBox_testmode.isChecked():
+            test_mode = True
+        else:
+            test_mode = False
         excel_directory = self.QTextEdit_excel_directory.toPlainText().strip('""')
         test_name = self.QTextEdit_test_name.toPlainText().strip('""')
+        ip_address = self.QTextEdit_ip_address.toPlainText().strip('""')
         try:
             sleep(2)
             self.pushButton_execute.setEnabled(False)
             hwp = init_hwp()
-            source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number)
+            source_to_problem_execute_gui(hwp = hwp,excel = excel_directory, test_name = test_name, grade_number= grade_number, ip_address = ip_address, test_mode = test_mode)
             self.pushButton_execute.setEnabled(True)
         except OSError as e:
             myWindow.appendTextFunction(string = "주문서 경로를 확인해주세요. : " + str(e))
@@ -137,8 +142,14 @@ class WindowClass(QDialog) :
            myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
            self.pushButton_execute_2.setEnabled(True)
 
-def new_basefile_no_number_gui(file_name : str, grade_number):
-    source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
+def new_basefile_no_number_gui(file_name : str, grade_number, test_mode = False):
+    if test_mode == False:
+        source_directory = r"C:\Users\Season\Desktop\자동화\기출_문제+답지_원본_2문제씩_번호x.hwp"
+        parent_directory = r"C:\Users\Season\Desktop\자동화\\"
+    else:
+        source_directory = r"D:\PythonTyphoon\태풍\기출_문제+답지_원본_2문제씩_번호x.hwp"
+        parent_directory = r"D:\PythonTyphoon\태풍\\"
+
     if "최종마무리" not in file_name:
         try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
         except AttributeError: file_name_date = ""
@@ -147,23 +158,27 @@ def new_basefile_no_number_gui(file_name : str, grade_number):
         file_name_count = file_name[:file_name.find("번")] if '번' in file_name else 0
         file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_count}번", "").replace(f"{file_name_school}", "").replace("()", "")
         if file_name_count != 0:
-            file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"(" + file_name[1:].strip() + str(")_검토용파일.hwp")
+            file_copy_directory = parent_directory + str(file_name_date) + f"_고" + str(grade_number) + " " + str(file_name_count) + "_" + str(file_name_school)+"(" + file_name[1:].strip() + str(")_검토용파일.hwp")
         else:
-            file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"("+ file_name[1:].strip() + str(")_검토용파일.hwp")
+            file_copy_directory = parent_directory + str(file_name_date) + f"_고" + str(grade_number) + "_" + str(file_name_school) +"("+ file_name[1:].strip() + str(")_검토용파일.hwp")
     else:
         try: file_name_date = re.search(r"\(([0-9_]+)\)", file_name).group(1)
         except AttributeError: file_name_date = ""
         try: file_name_school = re.search(r"[가-힣]{2,3}", file_name).group()
         except AttributeError: file_name_school = ""
         file_name = file_name.replace(f"({file_name_date})", "").replace(f"{file_name_school}", "").replace("()", "")
-        file_copy_directory = r"C:\Users\Season\Desktop\자동화\\" + str(file_name_date)+ f"_고" + str(grade_number) + "_" + str(file_name_school) + " "+ file_name.strip() + str("_검토용파일.hwp")
+        file_copy_directory = parent_directory + str(file_name_date)+ f"_고" + str(grade_number) + "_" + str(file_name_school) + " "+ file_name.strip() + str("_검토용파일.hwp")
     shutil.copyfile(source_directory, file_copy_directory)
     new_file = file_copy_directory
     return new_file
 
-def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
+def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_name : str, ip_address : str, basefile :bool = True, test_mode : bool = False):
     start_time = dt.now()
-    myWindow.appendTextFunction(string = f"{test_name} 제작 시작")
+    if test_mode == False:
+        myWindow.appendTextFunction(string = f"{test_name} 제작 시작")
+    else:
+        myWindow.appendTextFunction(string = f"{test_name} 제작 시작 (테스트모드)")
+
     progress = 0
     myWindow.progressbar.setValue(progress)
     myWindow.appendTextFunction(string = "엑셀 로딩중...")
@@ -171,11 +186,11 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.appendTextFunction(string = "엑셀 로딩 완료")
 
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade = grade_number)[test_name])+1)]
-    dst = new_basefile_no_number_gui(test_name, grade_number = grade_number)
+    dst = new_basefile_no_number_gui(test_name, grade_number = grade_number, test_mode = test_mode)
     for i in range(problems.shape[0]):
         myWindow.appendTextFunction(string=f"{dst_problem_number_for_field[i]}번 입력중...({i + 1}번째 입력)")
         problem_set = problems.iloc[i]
-        src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name, for_release = True)
+        src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name, for_release = True, test = test_mode, ip_address = ip_address)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         source_to_basefile_problem(hwp, source = problem_directory , source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
         source_to_basefile_solution(hwp, source = problem_directory, source_number = src_problem_number, destination = dst, destination_number = dst_problem_number_for_field[i])
@@ -217,12 +232,27 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
         insert_text(hwp, string=f"{str(grade_number)} {file_name_school} 최종마무리 ")
         circle_word(hwp, string = f"{test_name[test_name.find('리')+1]}")
 
-    new_field_list = hwp.GetFieldList().split("\x02")
+    # 누름틀 전체 삭제
+    # new_field_list = hwp.GetFieldList().split("\x02")
+    # for field in new_field_list:
+    #     hwp.MoveToField(f"{field}")
+    #     hwp.HAction.Run("DeleteField")
 
-    # 누름틀 삭제
-    for field in new_field_list:
-        hwp.MoveToField(f"{field}")
-        hwp.HAction.Run("DeleteField")
+    # 그림 가운데 정렬
+    ctrl = hwp.HeadCtrl
+    while ctrl != None:
+        try:
+            nextctrl = ctrl.Next
+        except:
+            sleep(0.2)
+            nextctrl = ctrl.Next
+        if ctrl.CtrlID == "gso":  # 그림의 컨트롤아이디
+            position = ctrl.GetAnchorPos(0)
+            position = position.Item("List"), position.Item("Para"), position.Item("Pos")
+            hwp.SetPos(*position)
+            hwp.HAction.Run("MoveRight")
+            hwp.HAction.Run("ParagraphShapeAlignCenter")
+        ctrl = nextctrl
 
     hwp.Save()
     sleep(0.2)
@@ -232,13 +262,17 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.progressbar.setValue(100)
     hwp.Quit()
 
-def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, reference : bool = False):
+def basefile_to_source_gui(hwp, basefile : str, grade_number, ip_address : str, excel = None, reference : bool = False, test_mode : bool = False):
     start_time = dt.now()
     hwp.Open(rf'{basefile}')
     # 검토용파일 존재하는지 검사
     if os.path.exists(basefile) == False:
         raise Exception("검토용파일이 존재하지 않습니다!")
-    myWindow.appendTextFunction_2(string=f"{basefile} 반영 시작")
+
+    if test_mode == False:
+        myWindow.appendTextFunction_2(string=f"{basefile} 반영 시작")
+    else:
+        myWindow.appendTextFunction_2(string=f"{basefile} 반영 시작 (테스트모드)")
     progress = 0
     myWindow.progressbar_2.setValue(progress)
     test_name = hwp.GetFieldText("검토용파일이름")
@@ -273,7 +307,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
     problem_change_solution = problems.iloc[field_list_change_solution_number]
     for i in range(problem_change_problem.shape[0]):
         problem_change_problem_set = problem_change_problem.iloc[i]
-        src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name = test_name, for_release = False)
+        src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name = test_name, for_release = False, ip_address = ip_address, test = test_mode)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.appendTextFunction_2(string = f"{field_list_change_problem_number[i]+1}번문제 반영중...({i+1}번째 입력)")
         hwp.Open(rf'{basefile}')
@@ -313,7 +347,7 @@ def basefile_to_source_gui(hwp, basefile : str, grade_number, excel = None, refe
 
     for i in range(problem_change_solution.shape[0]):
         problem_change_solution_set = problem_change_solution.iloc[i]
-        src = array_to_problem_directory(problem_change_solution_set, grade=grade_number, test_name = test_name, for_release = False)
+        src = array_to_problem_directory(problem_change_solution_set, grade=grade_number, test_name = test_name, for_release = False, test = test_mode)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.appendTextFunction_2(string = f"{field_list_change_solution_number[i]+1}번풀이 반영중...({i+1}번째 입력)")
         hwp.Open(rf'{basefile}')

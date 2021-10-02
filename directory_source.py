@@ -208,4 +208,3 @@ def get_problem_directory_list(root_directory):
 
 if __name__ == "__main__":
     find_empty_file(source = directory_source)
-    print(root_directory)

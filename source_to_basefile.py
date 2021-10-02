@@ -156,9 +156,9 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
     field_list = hwp.GetFieldList().split("\x02")
-    if f'{problem_number}번문제' not in field_list:
+    if f'{problem_number}번문제글상자' not in field_list:
         raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
-    hwp.MoveToField(f'{problem_number}번문제')
+    hwp.MoveToField(f'{problem_number}번문제글상자')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
     hwp.Save()
@@ -177,9 +177,9 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
         raise Exception("검토용 파일이 존재하지 않습니다!")
     hwp.Open(rf'{destination}')
     field_list = hwp.GetFieldList().split("\x02")
-    if f'{problem_number}번문제' not in field_list:
+    if f'{problem_number}번문제글상자' not in field_list:
         raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
-    hwp.MoveToField(f'{problem_number}번풀이')
+    hwp.MoveToField(f'{problem_number}번풀이글상자')
     hwp.HAction.Run("Paste")
 
     # 서식 유지를 위한 실행 코드
