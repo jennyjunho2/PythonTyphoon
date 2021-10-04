@@ -13,7 +13,7 @@ import re
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = False
+    hwp.XHwpWindows.Item(0).Visible = True
     return hwp
 
 ############################################################################################################################
@@ -315,6 +315,8 @@ def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, i
         if hwp.CharShape.Item("TextColor") == 255: # 빨간색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_solution_number.append(hwp.GetCurFieldName())
+            hwp.HAction.Run("SelectAll")
+            hwp.HAction.Run()
         else:
             pass
     field_list_change_problem_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
