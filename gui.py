@@ -23,11 +23,10 @@ class WindowClass(QDialog) :
     first_click = True
     def __init__(self) :
         super().__init__()
-        self.setWindowIcon(QIcon(r"icon.png"))
-        self.ui = uic.loadUi(r"test.ui", self)
+        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
         self.setFixedSize(1229, 569)
 
-        os.chdir("..")
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.ui.closeEvent = self.closeEvent
         self.pushButton_execute.clicked.connect(self.execute_function)
@@ -39,13 +38,13 @@ class WindowClass(QDialog) :
         self.get_ip_address()
 
     def get_ip_address(self):
-        with open("ip_address.txt", 'r') as ip_address_file:
+        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'r') as ip_address_file:
             ip_address = ip_address_file.readline()
         self.QTextEdit_ip_address.setPlainText(ip_address)
 
     def change_ip_address(self):
         new_ip = self.QTextEdit_ip_address.toPlainText()
-        with open("ip_address.txt", 'w') as ip_address_file:
+        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'w') as ip_address_file:
             ip_address_file.write(new_ip)
         myWindow.appendTextFunction("IP 주소가 업데이트 되었습니다!")
 
@@ -258,20 +257,20 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     #     hwp.HAction.Run("DeleteField")
 
     # 그림 가운데 정렬
-    ctrl = hwp.HeadCtrl
-    while ctrl != None:
-        try:
-            nextctrl = ctrl.Next
-        except:
-            sleep(0.2)
-            nextctrl = ctrl.Next
-        if ctrl.CtrlID == "gso":  # 그림의 컨트롤아이디
-            position = ctrl.GetAnchorPos(0)
-            position = position.Item("List"), position.Item("Para"), position.Item("Pos")
-            hwp.SetPos(*position)
-            hwp.HAction.Run("MoveRight")
-            hwp.HAction.Run("ParagraphShapeAlignCenter")
-        ctrl = nextctrl
+    # ctrl = hwp.HeadCtrl
+    # while ctrl != None:
+    #     try:
+    #         nextctrl = ctrl.Next
+    #     except:
+    #         sleep(0.2)
+    #         nextctrl = ctrl.Next
+    #     if ctrl.CtrlID == "gso":  # 그림의 컨트롤아이디
+    #         position = ctrl.GetAnchorPos(0)
+    #         position = position.Item("List"), position.Item("Para"), position.Item("Pos")
+    #         hwp.SetPos(*position)
+    #         hwp.HAction.Run("MoveRight")
+    #         hwp.HAction.Run("ParagraphShapeAlignCenter")
+    #     ctrl = nextctrl
 
     hwp.Save()
     sleep(0.2)
