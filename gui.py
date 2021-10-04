@@ -299,13 +299,15 @@ def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, i
     field_list_solution_number = [x for x in field_list if "번풀이번호" in x]
     field_list_change_problem_number = []
     field_list_change_solution_number = []
-
+    # 문제 번호 빨간색 표시 검사
     for field_problem_number in field_list_problem_number:
         hwp.MoveToField(field_problem_number, start = False)
         hwp.HAction.Run("SelectAll")
         if hwp.CharShape.Item("TextColor") == 255: # 빨간색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_problem_number.append(hwp.GetCurFieldName())
+            hwp.HAction.Run("SelectAll")
+            hwp.HAction.Run("CharShapeTextColorBlack")
         else:
             pass
 
@@ -316,9 +318,10 @@ def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, i
             hwp.HAction.Run("MoveLeft")
             field_list_change_solution_number.append(hwp.GetCurFieldName())
             hwp.HAction.Run("SelectAll")
-            hwp.HAction.Run()
+            hwp.HAction.Run("CharShapeTextColorBlack")
         else:
             pass
+
     field_list_change_problem_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
     field_list_change_solution_number = list(map(lambda y : int(y)-1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
     problem_change_problem = problems.iloc[field_list_change_problem_number]
