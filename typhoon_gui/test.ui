@@ -38,7 +38,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="first_tab">
     <attribute name="title">
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>찾아보기(...)</string>
+      <string>찾아보기(E)</string>
      </property>
     </widget>
     <zorder>groupBox_grade</zorder>
@@ -535,7 +535,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>찾아보기(...)</string>
+      <string>찾아보기(E)</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_second_2">
@@ -592,7 +592,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>찾아보기(...)</string>
+      <string>찾아보기(H)</string>
      </property>
     </widget>
    </widget>
@@ -814,7 +814,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>찾아보기(...)</string>
+      <string>찾아보기(E)</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_execute_3">
