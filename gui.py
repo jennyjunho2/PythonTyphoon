@@ -13,7 +13,7 @@ import re
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = True
+    hwp.XHwpWindows.Item(0).Visible = False
     return hwp
 
 ############################################################################################################################
@@ -23,39 +23,37 @@ class WindowClass(QDialog) :
     first_click = True
     def __init__(self) :
         super().__init__()
-        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
-        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
-        self.setFixedSize(1229, 569)
+
+        self.setWindowIcon(QIcon(os.getcwd() + r"\typhoon_gui\icon.png"))
+        self.ui = uic.loadUi(os.getcwd() + r"\typhoon_gui\test.ui", self)
+        self.setMaximumWidth(self.width())
+        self.setMaximumHeight(self.height())
 
         self.setWindowTitle("검토용파일 제작 프로그램")
         self.ui.closeEvent = self.closeEvent
         self.pushButton_execute.clicked.connect(self.execute_function)
         self.pushButton_execute_2.clicked.connect(self.execute_function_2)
+        self.pushButton_execute_3.clicked.connect(self.execute_function_3)
         self.pushButton_find_excel.clicked.connect(self.get_excel_file_name)
         self.pushButton_find_excel_2.clicked.connect(self.get_excel_file_name_2)
         self.pushButton_find_hwp_2.clicked.connect(self.get_hwp_file_name_2)
+        self.pushButton_find_excel_3.clicked.connect(self.get_excel_file_name_3)
         self.pushButton_change_ip_address.clicked.connect(self.change_ip_address)
         self.get_ip_address()
 
     def get_ip_address(self):
-        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'r') as ip_address_file:
+        with open(os.getcwd() + r"\ip_address.txt", 'r') as ip_address_file:
             ip_address = ip_address_file.readline()
         self.QTextEdit_ip_address.setPlainText(ip_address)
 
     def change_ip_address(self):
         new_ip = self.QTextEdit_ip_address.toPlainText()
-        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'w') as ip_address_file:
+        with open(os.getcwd() + r"\ip_address.txt", 'w') as ip_address_file:
             ip_address_file.write(new_ip)
         myWindow.appendTextFunction("IP 주소가 업데이트 되었습니다!")
 
     def closeEvent(self, event):
         hwp.Quit()
-
-    def getText_excel_directory(self):
-        excel_directory = self.QTextEdit_excel_directory.toPlainText()
-
-    def getText_test_name(self):
-        test_name = self.QTextEdit_test_name.toPlainText()
 
     def appendTextFunction(self, string) :
         self.textBrowser_progress.append(rf"{string}")
@@ -102,12 +100,6 @@ class WindowClass(QDialog) :
 
 ################################################################################################################
 
-    def getText_excel_directory_2(self):
-        basefile_directory = self.QTextEdit_excel_directory_2.toPlainText()
-
-    def getText_test_name_2(self):
-        test_name = self.QTextEdit_test_name_2.toPlainText()
-
     def appendTextFunction_2(self, string):
         self.textBrowser_progress_2.append(rf"{string}")
         QCoreApplication.processEvents()
@@ -144,7 +136,7 @@ class WindowClass(QDialog) :
         test_name = self.QTextEdit_test_name_2.toPlainText().strip('""')
         ip_address = self.QTextEdit_ip_address.toPlainText().strip('""')
         try:
-            self.pushButton_execute.setEnabled(False)
+            self.pushButton_execute_2.setEnabled(False)
             basefile_to_source_gui(hwp = hwp, excel = excel_directory, basefile = basefile_directory, test_name = test_name, grade_number= grade_number, ip_address = ip_address, test_mode = test_mode)
             self.pushButton_execute_2.setEnabled(True)
         except OSError:
@@ -159,6 +151,60 @@ class WindowClass(QDialog) :
         except Exception as e:
            myWindow.appendTextFunction_2(string="오류가 발생했습니다 : " + str(e))
            self.pushButton_execute_2.setEnabled(True)
+
+################################################################################################################
+
+    def appendTextFunction_3(self, string):
+        self.textBrowser_progress_3.append(rf"{string}")
+        QCoreApplication.processEvents()
+
+    def get_excel_file_name_3(self):
+        file_filter = 'Excel File (*.xlsx *.xls)'
+        response = QFileDialog.getSaveFileName(
+            parent = self,
+            caption = "엑셀 파일을 선택해주세요.",
+            filter = file_filter,
+            initialFilter = "엑셀 파일 (*.xlsx *.xls)"
+        )
+        self.QTextEdit_excel_directory_3.setPlainText(response[0])
+
+    def get_hwp_file_name_3(self):
+        file_filter = 'Hwp File (*.hwp)'
+        response = QFileDialog.getSaveFileName(
+            parent = self,
+            caption = "한글 파일을 선택해주세요.",
+            filter = file_filter,
+            initialFilter = "한글 파일 (*.hwp)"
+        )
+        self.QTextEdit_hwp_directory_3.setPlainText(response[0])
+
+    def execute_function_3(self):
+        if self.radioButton_grade1_3.isChecked() : grade_number = 1
+        elif self.radioButton_grade2_3.isChecked() : grade_number = 2
+        if self.checkBox_testmode.isChecked() :
+            test_mode = True
+        else:
+            test_mode = False
+        excel_directory = self.QTextEdit_excel_directory_3.toPlainText().strip('""')
+        test_name = self.QTextEdit_test_name_3.toPlainText().strip('""')
+        ip_address = self.QTextEdit_ip_address.toPlainText().strip('""')
+        reference_string = self.QTextEdit_reference_string_3.toPlainText().strip('""')
+        try:
+            self.pushButton_execute_3.setEnabled(False)
+            add_reference_gui(hwp = hwp, test_name = test_name, grade_number = grade_number, ip_address = ip_address, reference_string = reference_string, excel = excel_directory, test_mode = test_mode)
+            self.pushButton_execute_3.setEnabled(True)
+        except OSError:
+            myWindow.appendTextFunction_3(string = "검토용파일 경로를 확인해주세요.")
+            self.pushButton_execute_3.setEnabled(True)
+        except UnboundLocalError:
+            myWindow.appendTextFunction_3(string = "학년을 선택해주세요.")
+            self.pushButton_execute_3.setEnabled(True)
+        except ValueError:
+           myWindow.appendTextFunction_3(string = "학년과 시험지 이름을 확인해주세요.")
+           self.pushButton_execute_3.setEnabled(True)
+        except Exception as e:
+           myWindow.appendTextFunction_3(string="오류가 발생했습니다 : " + str(e))
+           self.pushButton_execute_e.setEnabled(True)
 
 def new_basefile_no_number_gui(file_name : str, grade_number, test_mode = False):
     if test_mode == False:
@@ -280,7 +326,7 @@ def source_to_problem_execute_gui(hwp, excel : str, grade_number : int, test_nam
     myWindow.progressbar.setValue(100)
     hwp.Quit()
 
-def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, ip_address : str, excel = None, reference : bool = False, test_mode : bool = False):
+def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, ip_address : str, excel = None, test_mode : bool = False):
     start_time = dt.now()
     hwp.Open(rf'{basefile}')
     # 검토용파일 존재하는지 검사
@@ -419,6 +465,51 @@ def basefile_to_source_gui(hwp, basefile : str, test_name : str, grade_number, i
     myWindow.appendTextFunction_2(f'반영을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
     myWindow.progressbar_2.setValue(100)
     hwp.Quit()
+
+def add_reference_gui(hwp, test_name : str, grade_number, ip_address : str, reference_string : str, excel = None, test_mode : bool = False):
+    start_time = dt.now()
+    if test_mode == False:
+        myWindow.appendTextFunction_3(string = f"{test_name} 출처 표시 시작")
+    else:
+        myWindow.appendTextFunction_3(string = f"{test_name} 출처 표시 시작 (테스트 모드)")
+
+    progress = 0
+    myWindow.progressbar_3.setValue(progress)
+    myWindow.appendTextFunction_3(string = "엑셀 로딩중...")
+    problems = get_problem_list(excel = excel, grade = grade_number, test_name = test_name)
+    myWindow.appendTextFunction_3(string = "엑셀 로딩 완료")
+
+    dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade=grade_number)[test_name]) + 1)]
+    dst = new_basefile_no_number_gui(test_name, grade_number=grade_number, test_mode=test_mode)
+    for i in range(problems.shape[0]):
+        myWindow.appendTextFunction_3(string=f"{dst_problem_number_for_field[i]}번 출처 표시중...({i + 1}번째 입력)")
+        problem_set = problems.iloc[i]
+        src = array_to_problem_directory(problem_set, grade=grade_number, test_name = test_name, for_release = False, test = test_mode, ip_address = ip_address)
+        problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
+
+        if os.path.exists(problem_directory) == False:
+            raise Exception(f"{i + 1}번문제 문제저장용 파일이 존재하지 않습니다!")
+        hwp.Open(rf"{problem_directory}")
+        time.sleep(5)
+        hwp.MoveToField(f"{src[1]}번문제")
+        hwp.HAction.Run("SelectAll")
+        hwp.HAction.Run("MoveRight")
+        hwp.HAction.Run("BreakPara")
+        insert_text(hwp ,string = reference_string)
+        hwp.HAction.Run("StyleShortcut6")
+
+        hwp.Save()
+        myWindow.appendTextFunction_3(string=f"{dst_problem_number_for_field[i]}번 출처 표시 완료! ({i + 1}번째 입력)")
+        progress += (100 // problems.shape[0])
+        myWindow.progressbar_3.setValue(progress)
+
+    sleep(0.2)
+    end_time = dt.now()
+    elapsed_time = end_time - start_time
+    myWindow.appendTextFunction(f'출처 표시를 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+    myWindow.progressbar.setValue(100)
+    hwp.Quit()
+
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
