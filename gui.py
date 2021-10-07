@@ -27,8 +27,8 @@ class WindowClass(QDialog):
 
     def __init__(self):
         super().__init__()
-        self.setWindowIcon(QIcon(os.getcwd() + r"\typhoon_gui\icon.png"))
-        self.ui = uic.loadUi(os.getcwd() + r"\typhoon_gui\test.ui", self)
+        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
+        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
         self.setMaximumWidth(self.width())
         self.setMinimumWidth(self.width())
         self.setMaximumHeight(self.height())
@@ -58,19 +58,25 @@ class WindowClass(QDialog):
         self.shortcut_tab_second.activated.connect(self.change_tab_to_second)
         self.shortcut_tab_third.activated.connect(self.change_tab_to_third)
 
+        #self.shortcut_execute_1 = QShortcut(QKeySequence("Ctrl+E"), self)
+        #self.shortcut_execute_2 = QShortcut(QKeySequence("Ctrl+E"), self)
+        #self.shortcut_execute_3 = QShortcut(QKeySequence("Ctrl+E"), self)
+
+        self.shorcut_execute_1.activated.connect(self.execute_function)
+        #self.shortcut_execute_2.activated.connect(self.execute_function_2)
+        #self.shortcut_execute_3.activated.connect(self.execute_function_3)
+
+
         self.get_ip_address()
 
     def change_tab_to_first(self):
         if self.tab_kind.currentIndex != 0:
             self.tab_kind.setCurrentIndex(0)
-            try:
-                self.shortcut_excel.activated.disconnect()
-            except TypeError:
-                pass
-            try:
-                self.shortcut_hwp.activated.disconnect()
-            except TypeError:
-                pass
+            try: self.shortcut_excel.activated.disconnect()
+            except TypeError: pass
+            try: self.shortcut_hwp.activated.disconnect()
+            except TypeError: pass
+
             self.shortcut_excel.activated.connect(self.get_excel_file_name)
         else:
             pass
@@ -78,14 +84,11 @@ class WindowClass(QDialog):
     def change_tab_to_second(self):
         if self.tab_kind.currentIndex != 1:
             self.tab_kind.setCurrentIndex(1)
-            try:
-                self.shortcut_excel.activated.disconnect()
-            except TypeError:
-                pass
-            try:
-                self.shortcut_hwp.activated.disconnect()
-            except TypeError:
-                pass
+            try: self.shortcut_excel.activated.disconnect()
+            except TypeError: pass
+            try: self.shortcut_hwp.activated.disconnect()
+            except TypeError: pass
+
             self.shortcut_excel.activated.connect(self.get_excel_file_name_2)
             self.shortcut_hwp.activated.connect(self.get_hwp_file_name_2)
         else:
@@ -94,27 +97,21 @@ class WindowClass(QDialog):
     def change_tab_to_third(self):
         if self.tab_kind.currentIndex != 2:
             self.tab_kind.setCurrentIndex(2)
-            try:
-                self.shortcut_excel.activated.disconnect()
-            except TypeError:
-                pass
-            try:
-                self.shortcut_hwp.activated.disconnect()
-            except TypeError:
-                pass
+            try: self.shortcut_excel.activated.disconnect()
+            except TypeError: pass
+            try: self.shortcut_hwp.activated.disconnect()
+            except TypeError: pass
+
             self.shortcut_excel.activated.connect(self.get_excel_file_name_3)
         else:
             pass
 
     def handle_tab_bar_clicked(self, index):
-        try:
-            self.shortcut_excel.activated.disconnect()
-        except TypeError:
-            pass
-        try:
-            self.shortcut_hwp.activated.disconnect()
-        except TypeError:
-            pass
+        try: self.shortcut_excel.activated.disconnect()
+        except TypeError: pass
+        try: self.shortcut_hwp.activated.disconnect()
+        except TypeError: pass
+
         if index == 0:
             self.shortcut_excel.activated.connect(self.get_excel_file_name)
         elif index == 1:
@@ -124,13 +121,13 @@ class WindowClass(QDialog):
             self.shortcut_excel.activated.connect(self.get_excel_file_name_3)
 
     def get_ip_address(self):
-        with open(os.getcwd() + r"\ip_address.txt", 'r') as ip_address_file:
+        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'r') as ip_address_file:
             ip_address = ip_address_file.readline()
         self.QTextEdit_ip_address.setPlainText(ip_address)
 
     def change_ip_address(self):
         new_ip = self.QTextEdit_ip_address.toPlainText()
-        with open(os.getcwd() + r"\ip_address.txt", 'w') as ip_address_file:
+        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'w') as ip_address_file:
             ip_address_file.write(new_ip)
         myWindow.append_text_function("IP 주소가 업데이트 되었습니다!")
 
