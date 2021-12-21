@@ -1,5 +1,5 @@
 import win32com.client as win32
-from datetime import datetime as dt
+import time
 from source_to_basefile import *
 from directory_source import *
 
@@ -21,20 +21,22 @@ testbench_fieldtest2 = directory + r'\태풍\testbench_fieldtest2.hwp'
 testbench_fieldtest3 = directory + r'\태풍\testbench_fieldtest3.hwp'
 testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
-#############################
+###########################
 
-hwp.Open(r"D:\PythonTyphoon\태풍\211005_고1_강서 최종마무리2_검토용파일.hwp")
-ctrl = hwp.HeadCtrl
-while ctrl != None:
-    try:
-        nextctrl = ctrl.Next
-    except:
-        sleep(0.2)
-        nextctrl = ctrl.Next
-    if ctrl.CtrlID == "gso":  # 표의 컨트롤아이디
-        position = ctrl.GetAnchorPos(0)
-        position = position.Item("List"), position.Item("Para"), position.Item("Pos")
-        hwp.SetPos(*position)
-        hwp.HAction.Run("MoveRight")
-        hwp.HAction.Run("ParagraphShapeAlignCenter")
-    ctrl = nextctrl
+hwp.Open(directory + r'\태풍\sample.hwp')
+max_number = 260
+for _ in range(50):
+    # field_list = hwp.GetFieldList().split("\x02")
+    hwp.MovePos(3)
+    insert_file(hwp, FileName=directory + r"\태풍\나를 붙여보세요.hwp")
+    hwp.RenameField("추가문제번호", f"{max_number + 1}번문제번호")
+    hwp.RenameField("추가풀이번호", f"{max_number + 1}번풀이번호")
+    hwp.RenameField("추가문제", f"{max_number + 1}번문제")
+    hwp.RenameField("추가풀이", f"{max_number + 1}번풀이")
+    hwp.PutFieldText(f"{max_number + 1}번문제번호", f"{max_number + 1}")
+    hwp.PutFieldText(f"{max_number + 1}번풀이번호", f"{max_number + 1}")
+    time.sleep(0.1)
+    max_number += 1
+
+
+

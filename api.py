@@ -75,6 +75,24 @@ def shape_copy_paste(hwp, type = 2):
     hwp.HAction.GetDefault("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
     hwp.HAction.Execute("ShapeCopyPaste", hwp.HParameterSet.HShapeCopyPaste.HSet)
 
+def insert_file(hwp, FileName, KeepSection = 1, KeepCharshape = 1, KeepParashape = 1, KeepStyle = 1):
+    """
+    :param hwp: hwp 파일 기본
+    :param FileName: 파일 경로
+    :param KeepSection: 글자 모양 유지
+    :param KeepCharshape: 쪽 모양 유지
+    :param KeepParashape: 문단 모양 유지
+    :param KeepStyle: 스타일 유지
+    0의 경우 유지 안함, 1의 경우 유지
+    """
+    hwp.HAction.GetDefault("InsertFile", hwp.HParameterSet.HInsertFile.HSet)
+    hwp.HParameterSet.HInsertFile.filename = FileName
+    hwp.HParameterSet.HInsertFile.KeepSection = KeepSection
+    hwp.HParameterSet.HInsertFile.KeepCharshape = KeepCharshape
+    hwp.HParameterSet.HInsertFile.KeepParashape = KeepParashape
+    hwp.HParameterSet.HInsertFile.KeepStyle = KeepStyle
+    hwp.HAction.Execute("InsertFile", hwp.HParameterSet.HInsertFile.HSet)
+
 if __name__ == "__main__":
     import win32com.client as win32
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")

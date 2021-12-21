@@ -205,6 +205,3 @@ def get_problem_directory_list(root_directory):
         for name in files:
             file_list.append(os.path.join(path, name))
     return file_list
-
-if __name__ == "__main__":
-    find_empty_file(source = directory_source)
