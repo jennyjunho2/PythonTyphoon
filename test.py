@@ -22,10 +22,10 @@ testbench_fieldtest3 = directory + r'\태풍\testbench_fieldtest3.hwp'
 testbench_basefiletest = directory + r'\태풍\testbench_basefiletest.hwp'
 grade_number = 1 # 고1
 ###########################
-
-hwp.Open(directory + r'\태풍\sample.hwp')
-max_number = 260
-for _ in range(50):
+"""
+hwp.Open(directory + r'\태풍\기출_문제+답지_1문제_test.hwp')
+max_number = 1
+for _ in range(600):
     # field_list = hwp.GetFieldList().split("\x02")
     hwp.MovePos(3)
     insert_file(hwp, FileName=directory + r"\태풍\나를 붙여보세요.hwp")
@@ -37,6 +37,10 @@ for _ in range(50):
     hwp.PutFieldText(f"{max_number + 1}번풀이번호", f"{max_number + 1}")
     time.sleep(0.1)
     max_number += 1
+"""
+hwp.Open(directory + r'\태풍\600문제.hwp')
+print(hwp.GetFieldList().split("\x02")[-4:])
+move_to_field(hwp, "300번문제")
 
 
 
