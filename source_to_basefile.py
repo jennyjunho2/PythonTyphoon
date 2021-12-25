@@ -90,6 +90,7 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
     hwp.Open(rf'{source}')
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번문제' not in field_list:
+        kill_hwp()
         raise Exception(f"문제 저장용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("MoveRight")
@@ -110,7 +111,7 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
         hwp.SetPos(*end_pos)
         hwp.HAction.Run("Copy")
         hwp.HAction.Run("MoveDown")
-        sleep(0.2)
+        sleep(0.1)
     else:
         start_pos = hwp.GetPos()
         hwp.HAction.Run("SelectAll")
@@ -121,7 +122,7 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
         hwp.SetPos(*end_pos)
         hwp.HAction.Run("Copy")
         hwp.HAction.Run("MoveDown")
-        sleep(0.2)
+        sleep(0.1)
 
 def source_to_basefile_copy_solution(hwp, source, problem_number):
     """
@@ -136,15 +137,16 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
         raise Exception("문제저장용 파일이 존재하지 않습니다!")
     field_list = hwp.GetFieldList().split("\x02")
     if f'{problem_number}번풀이' not in field_list:
+        kill_hwp()
         raise Exception(f"문제 저장용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("MoveRight")
     hwp.HAction.Run("MoveSelTopLevelEnd")
     hwp.HAction.Run("Copy")
     hwp.HAction.Run("MoveDown")
-    sleep(0.2)
+    sleep(0.1)
 
-def source_to_basefile_paste_problem(hwp, destination, problem_number):
+def source_to_basefile_paste_problem(hwp, destination, problem_number, txtbox = True):
     """
     문제저장용 파일에서 베이스파일로 문제를 붙여넣기하는 함수입니다.
     :param hwp : 아래아한글 기본파일 exe
@@ -156,15 +158,21 @@ def source_to_basefile_paste_problem(hwp, destination, problem_number):
     if os.path.exists(destination) == False:
         raise Exception("검토용 파일이 존재하지 않습니다!")
     field_list = hwp.GetFieldList().split("\x02")
-    if f'{problem_number}번문제글상자' not in field_list:
-        raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
-    hwp.MoveToField(f'{problem_number}번문제글상자')
+    if txtbox == True:
+        if f'{problem_number}번문제글상자' not in field_list:
+            kill_hwp()
+            raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
+    else:
+        if f'{problem_number}번문제' not in field_list:
+            kill_hwp()
+            raise Exception(f"검토용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
+    hwp.MoveToField(f'{problem_number}번문제글상자') if txtbox == True else hwp.MoveToField(f'{problem_number}번문제')
     hwp.HAction.Run("Paste")
     hwp.HAction.Run("MoveDown")
     hwp.Save()
-    sleep(0.2)
+    sleep(0.1)
 
-def source_to_basefile_paste_solution(hwp, destination, problem_number):
+def source_to_basefile_paste_solution(hwp, destination, problem_number, txtbox = True):
     """
     문제저장용 파일에서 베이스파일로 풀이를 붙여넣기하는 함수입니다.
     :param hwp: 아래아한글 기본파일 exe
@@ -177,16 +185,22 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
         raise Exception("검토용 파일이 존재하지 않습니다!")
     hwp.Open(rf'{destination}')
     field_list = hwp.GetFieldList().split("\x02")
-    if f'{problem_number}번문제글상자' not in field_list:
-        raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
-    hwp.MoveToField(f'{problem_number}번풀이글상자')
+    if txtbox == True:
+        if f'{problem_number}번풀이글상자' not in field_list:
+            kill_hwp()
+            raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
+    else:
+        if f'{problem_number}번풀이' not in field_list:
+            kill_hwp()
+            raise Exception(f"검토용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
+    hwp.MoveToField(f'{problem_number}번풀이글상자') if txtbox == True else hwp.MoveToField(f'{problem_number}번풀이')
     hwp.HAction.Run("Paste")
 
     # 서식 유지를 위한 실행 코드
-    shape_copy_paste(hwp)
+    # shape_copy_paste(hwp)
     hwp.HAction.Run("MoveDown")
     hwp.Save()
-    sleep(0.2)
+    sleep(0.1)
 
 # def source_to_problem_execute(hwp, excel : str, grade_number : int, test_name : str, basefile :bool = True):
 #     start_time = dt.now()
@@ -232,7 +246,7 @@ def source_to_basefile_paste_solution(hwp, destination, problem_number):
 #     add_problem_number_basefile(hwp, problem_array = problem_number_list, file = dst)
 #     hwp.Save()
 
-def source_to_basefile_problem(hwp, source, source_number, destination, destination_number):
+def source_to_basefile_problem(hwp, source, source_number, destination, destination_number, txtbox = True):
     """
     # 문제저장용 파일에서 베이스파일로 문제를 복사, 붙여넣기하는 함수입니다.
     # 위의 함수를 활용하였기에 copy, paste 함수만 잘 작동하면 됩니다!
@@ -243,9 +257,9 @@ def source_to_basefile_problem(hwp, source, source_number, destination, destinat
     # destination_number : 검토용파일에 넣을 문제번호
     """
     source_to_basefile_copy_problem(hwp, source, source_number)
-    source_to_basefile_paste_problem(hwp, destination, destination_number)
+    source_to_basefile_paste_problem(hwp, destination, destination_number, txtbox = txtbox)
 
-def source_to_basefile_solution(hwp, source, source_number, destination, destination_number):
+def source_to_basefile_solution(hwp, source, source_number, destination, destination_number, txtbox = True):
     """
        # 문제저장용 파일에서 베이스파일로 풀이를 복사, 붙여넣기하는 함수입니다.
        # 위의 함수를 활용하였기에 copy, paste 함수만 잘 작동하면 됩니다!
@@ -256,7 +270,7 @@ def source_to_basefile_solution(hwp, source, source_number, destination, destina
        # destination_number : 검토용파일에 넣을 문제번호
        """
     source_to_basefile_copy_solution(hwp, source, source_number)
-    source_to_basefile_paste_solution(hwp, destination, destination_number)
+    source_to_basefile_paste_solution(hwp, destination, destination_number, txtbox = txtbox)
 
 def new_basefile(file_name : str):
     source_directory = os.getcwd() + r'\태풍\기출_문제+답지_원본_2문제씩_번호o.hwp'

@@ -47,7 +47,7 @@ def get_problem_list(excel : str, grade : int, test_name : str):
                                                            excel_problem_list.columns.tolist()[excel_problem_list.columns.tolist().index(test_name)+1]]].dropna(axis = 0).replace({test_name : replace_question_to_number})
     return excel_problem_list_problem_index.sort_values(by = [test_name])
 
-def array_to_problem_directory(problem_set, grade : int, test_name : str, for_release : bool, ip_address = "172.30.1.60", test = False):
+def array_to_problem_directory(problem_set, grade : int, test_name : str, for_release : bool, ip_address, test = False):
     """
     대단원, 소단원, 난이도, 번호, 테스트 이름, 배점의 형태를 읽어 이를 hwp 경로로 읽을 수 있게 변환하여주는 함수입니다.\n
     :param problem_set: array
@@ -152,6 +152,6 @@ def get_problem_list_change(excel, grade : int, test_name_from : str, test_name_
     return excel_problem_list_intersect, excel_problem_list_not_intersect
 
 if __name__ == "__main__":
-    excelfile_directory = os.getcwd() + r'\태풍\내신주문서.xlsx'
+    excelfile_directory = os.path.join(os.getcwd(),'태풍\내신주문서.xlsx')
     # print(readexcel(excelfile_directory, 1))
     # print(get_problem_list(excel = r"D:\PythonTyphoon\태풍\내신주문서.xlsx", grade = 1, test_name = "양정 최종마무리3 (210707)"))

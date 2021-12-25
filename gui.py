@@ -62,7 +62,7 @@ class WindowClass(QDialog):
         #self.shortcut_execute_2 = QShortcut(QKeySequence("Ctrl+E"), self)
         #self.shortcut_execute_3 = QShortcut(QKeySequence("Ctrl+E"), self)
 
-        self.shorcut_execute_1.activated.connect(self.execute_function)
+        # self.shorcut_execute_1.activated.connect(self.execute_function)
         #self.shortcut_execute_2.activated.connect(self.execute_function_2)
         #self.shortcut_execute_3.activated.connect(self.execute_function_3)
 

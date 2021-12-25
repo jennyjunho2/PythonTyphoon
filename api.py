@@ -1,4 +1,7 @@
 # HWP파일에서 자주 사용하는 함수 정리
+import os
+import psutil
+
 def find_word(hwp, word, size, direction="Forward"):
     hwp.HAction.GetDefault("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
     hwp.HParameterSet.HFindReplace.Direction = hwp.FindDir(direction)
@@ -92,6 +95,37 @@ def insert_file(hwp, FileName, KeepSection = 1, KeepCharshape = 1, KeepParashape
     hwp.HParameterSet.HInsertFile.KeepParashape = KeepParashape
     hwp.HParameterSet.HInsertFile.KeepStyle = KeepStyle
     hwp.HAction.Execute("InsertFile", hwp.HParameterSet.HInsertFile.HSet)
+
+def move_to_field(hwp, field, text = True, start = True, select = False):
+    """
+    :param hwp: hwp 파일
+    :param field: 필드 이름, 중복된 필드 이름이 있을 경우 이름 뒤에 '{{#}}'로 번호를 지정할 수 있다.
+    :param text: True시 누름틀 내부, False시 누름틀 코드로 이동, 기본값은 True
+    :param start: True시 필드의 처음, False시 필드의 끝으로 이동, 기본값은 True
+    :param select: True시 필드 선택시 블록 단위, False시 캐럿만 이동
+    :return: None
+    """
+    hwp.MoveToField(f"{field}", text = text, start = start, select = select)
+
+def get_field_list(hwp):
+    field_list = hwp.GetFieldList().split("\x02")
+    return field_list
+
+def put_field_text(hwp, field: str, text: str):
+    hwp.PutFieldText(Field = field, Text=text)
+
+def kill_hwp():
+    my_pid = os.getpid()
+    for proc in psutil.process_iter():
+        try:
+            process_name = proc.name()
+            if proc.pid == my_pid:
+                continue
+
+            if (process_name.startswith('Hwp')) and ('Automation' in (''.join(proc.cmdline()))):
+                proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
+            print(e)
 
 if __name__ == "__main__":
     import win32com.client as win32
