@@ -44,7 +44,7 @@ for path, subdirs, files in os.walk(r"C:\Users\Season\Desktop\기출시험지 �
     for name in files:
         file_list.append(os.path.join(path, name))
 
-for file_directory in file_list[99:]:
+for file_directory in file_list[63:79]:
     print(file_directory, file_list.index(file_directory))
     hwp.Open(r"C:\Users\Season\Desktop\기출_문제+답지_1문제_test.hwp")
     destination = file_directory.replace("test", "destination")
@@ -55,9 +55,9 @@ for file_directory in file_list[99:]:
         source_to_basefile_problem(hwp, file_directory, num, destination, num, txtbox = False)
         source_to_basefile_solution(hwp, file_directory, num, destination, num, txtbox = False)
         hwp.Save()
-# 고1 - 평면좌표 중(35)부터 해야함
+# 고1 - 함수 하(63)부터 해야함
 # 고2는 지수 상(79)부터 시작
-# 고2 - 지수 중(80)부터 진행해야함
+# 고2 - 등차수열 상(103)부터 진행해야함
 
 
 

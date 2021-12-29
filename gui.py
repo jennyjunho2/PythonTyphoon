@@ -408,22 +408,6 @@ def source_to_problem_execute_gui(hwp, excel: str, grade_number: int, test_name:
     #     hwp.MoveToField(f"{field}")
     #     hwp.HAction.Run("DeleteField")
 
-    # 그림 가운데 정렬
-    # ctrl = hwp.HeadCtrl
-    # while ctrl != None:
-    #     try:
-    #         nextctrl = ctrl.Next
-    #     except:
-    #         sleep(0.2)
-    #         nextctrl = ctrl.Next
-    #     if ctrl.CtrlID == "gso":  # 그림의 컨트롤아이디
-    #         position = ctrl.GetAnchorPos(0)
-    #         position = position.Item("List"), position.Item("Para"), position.Item("Pos")
-    #         hwp.SetPos(*position)
-    #         hwp.HAction.Run("MoveRight")
-    #         hwp.HAction.Run("ParagraphShapeAlignCenter")
-    #     ctrl = nextctrl
-
     hwp.Save()
     sleep(0.2)
     end_time = dt.now()
@@ -476,10 +460,8 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         else:
             pass
 
-    field_list_change_problem_number = list(
-        map(lambda y: int(y) - 1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
-    field_list_change_solution_number = list(
-        map(lambda y: int(y) - 1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
+    field_list_change_problem_number = list(map(lambda y: int(y) - 1, list(map(lambda x: x[:-5], field_list_change_problem_number))))
+    field_list_change_solution_number = list(map(lambda y: int(y) - 1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
     problem_change_problem = problems.iloc[field_list_change_problem_number]
     problem_change_solution = problems.iloc[field_list_change_solution_number]
     for i in range(problem_change_problem.shape[0]):  # 각 문제에 대하여
@@ -491,7 +473,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
 
         # 반영 전 검토용파일 문제 복사하기
         hwp.Open(rf'{basefile}')
-        shape_copy_paste(hwp)
+        #shape_copy_paste(hwp)
         hwp.MoveToField(f"{field_list_change_problem_number[i] + 1}번문제글상자", start=True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
@@ -510,7 +492,6 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         hwp.Open(rf"{problem_directory}")
         time.sleep(5)
         hwp.MoveToField(f"{src[1]}번문제")
-        hwp.HAction.Run("MoveRight")
         start_pos = hwp.GetPos()
         hwp.HAction.Run("SelectAll")
         hwp.HAction.Run("MoveRight")
@@ -522,7 +503,6 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         hwp.SetPos(*start_pos)
         hwp.Run("Paste")
         hwp.MoveToField(f"{src[1]}번문제")
-        hwp.HAction.Run("MoveRight")
         hwp.HAction.Run("StyleShortcut2")
 
         hwp.Save()
@@ -538,7 +518,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.append_text_function_2(string=f"{field_list_change_solution_number[i] + 1}번풀이 반영중...({i + 1}번째 입력)")
         hwp.Open(rf'{basefile}')
-        shape_copy_paste(hwp)
+        #shape_copy_paste(hwp)
         hwp.MoveToField(f"{field_list_change_solution_number[i] + 1}번풀이글상자", start=True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
@@ -555,7 +535,6 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
             raise Exception(f"{field_list_change_solution_number[i] + 1}번풀이 문제저장용 파일이 존재하지 않습니다!")
         hwp.Open(rf"{problem_directory}")
         hwp.MoveToField(f"{src[1]}번풀이")
-        hwp.HAction.Run("MoveRight")
         start_pos = hwp.GetPos()
         hwp.HAction.Run("SelectAll")
         hwp.HAction.Run("MoveRight")
