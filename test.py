@@ -45,7 +45,7 @@ for path, subdirs, files in os.walk(r"D:\PythonTyphoon\기출시험지 배포용
     for name in files:
         file_list.append(os.path.join(path, name))
 
-for file_directory in file_list[123:]:
+for file_directory in file_list[125:]:
     print(file_directory, file_list.index(file_directory))
     hwp.Open(r"D:\PythonTyphoon\태풍\기출_문제+답지_1문제_test.hwp")
     destination = file_directory.replace("test", "destination")
@@ -59,4 +59,4 @@ for file_directory in file_list[123:]:
         hwp.Save()
 # 고1 - 끝
 # 고2는 지수 상(79)부터 시작
-# 고2 - 미분계수와 도함수 최상(123)부터 진행해야함
+# 고2 - 미분계수와 도함수 하(126)부터 진행해야함
