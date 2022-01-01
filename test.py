@@ -2,6 +2,7 @@ import win32com.client as win32
 import time
 from source_to_basefile import *
 from directory_source import *
+import logging
 import shutil
 
 def init_hwp():
@@ -40,24 +41,22 @@ grade_number = 1 # 고1
 #     max_number += 1
 
 file_list = []
-for path, subdirs, files in os.walk(r"C:\Users\Season\Desktop\기출시험지 배포용 - test\문제저장용"):
+for path, subdirs, files in os.walk(r"D:\PythonTyphoon\기출시험지 배포용 - test\문제저장용"):
     for name in files:
         file_list.append(os.path.join(path, name))
 
-for file_directory in file_list[63:79]:
+for file_directory in file_list[123:]:
     print(file_directory, file_list.index(file_directory))
-    hwp.Open(r"C:\Users\Season\Desktop\기출_문제+답지_1문제_test.hwp")
+    hwp.Open(r"D:\PythonTyphoon\태풍\기출_문제+답지_1문제_test.hwp")
     destination = file_directory.replace("test", "destination")
     hwp.SaveAs(destination)
     hwp.Open(file_directory)
     problem_set = sorted(map(int, list(set(map(lambda x:x.replace("번문제", "").replace("번풀이", ""), get_field_list(hwp))))))
+    # print(problem_set)
     for num in problem_set:
         source_to_basefile_problem(hwp, file_directory, num, destination, num, txtbox = False)
         source_to_basefile_solution(hwp, file_directory, num, destination, num, txtbox = False)
         hwp.Save()
-# 고1 - 함수 하(63)부터 해야함
+# 고1 - 끝
 # 고2는 지수 상(79)부터 시작
-# 고2 - 등차수열 상(103)부터 진행해야함
-
-
-
+# 고2 - 미분계수와 도함수 최상(123)부터 진행해야함
