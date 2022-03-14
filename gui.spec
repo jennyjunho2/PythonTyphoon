@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['gui.py'],
-             pathex=['C:\\Users\\Season\\Desktop\\준호타이핑용\\testbench'],
+             pathex=[],
              binaries=[],
              datas=[],
              hiddenimports=[],

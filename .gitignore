@@ -96,3 +96,8 @@ modules.xml
 /typhoon_gui/dist/
 /dist/
 /build/
+__pycache__/api.cpython-39.pyc
+__pycache__/directory_source.cpython-39.pyc
+__pycache__/gui.cpython-39.pyc
+__pycache__/read_excel.cpython-39.pyc
+__pycache__/source_to_basefile.cpython-39.pyc

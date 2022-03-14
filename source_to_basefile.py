@@ -10,8 +10,6 @@ from api import *
 # 만든이 : 이준호(a01032208149@gmail.com으로 연락주세요 :) )
 """
 
-global replace_question_to_number
-global replace_number_to_question
 replace_question_to_number = { '서답형1' : 41,'서답형2' : 42, '서답형3' : 43,'서답형4' : 44,'서답형5' : 45,'서답형6' : 46,'서답형7' : 47,'서답형8' : 48,'서답형9' : 49,'서답형10' : 50,
                             '서술형1' : 51,'서술형2' : 52, '서술형3' : 53, '서술형4' : 54, '서술형5' : 55, '서술형6' : 56, '서술형7' : 57, '서술형8' : 58, '서술형9' : 59, '서술형10' : 60}
 replace_number_to_question = {41 : '서1', 42 : '서2', 43 : '서3',44 : '서4',45 : '서5',46 : '서6',47 : '서7', 48 : '서8', 49 : '서9', 50 : '서10',
@@ -93,7 +91,6 @@ def source_to_basefile_copy_problem(hwp, source, problem_number : int, copy_only
         kill_hwp()
         raise Exception(f"문제 저장용 파일에 {problem_number}번 문제가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번문제')
-    hwp.HAction.Run("MoveRight")
     if (copy_only_problem == True):
         start_pos = hwp.GetPos()
         end_string = """1번, 2번, 3번, 4번, 5번, 6번, 7번, 8번, 9번, 10번,
@@ -140,7 +137,6 @@ def source_to_basefile_copy_solution(hwp, source, problem_number):
         kill_hwp()
         raise Exception(f"문제 저장용 파일에 {problem_number}번 풀이가 존재하지 않습니다!")
     hwp.MoveToField(f'{problem_number}번풀이')
-    hwp.HAction.Run("MoveRight")
     hwp.HAction.Run("MoveSelTopLevelEnd")
     hwp.HAction.Run("Copy")
     hwp.HAction.Run("MoveDown")

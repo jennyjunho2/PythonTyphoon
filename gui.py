@@ -10,25 +10,23 @@ import shutil
 import time
 import re
 
-
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = False
+    hwp.XHwpWindows.Item(0).Visible = True
     return hwp
 
-
-#######################################################################################################################
 hwp = init_hwp()
-
-
+#######################################################################################################################
 class WindowClass(QDialog):
     first_click = True
 
     def __init__(self):
+        
         super().__init__()
-        self.setWindowIcon(QIcon(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\icon.png"))
-        self.ui = uic.loadUi(r"C:\Users\Season\Desktop\준호타이핑용\testbench\typhoon_gui\test.ui", self)
+        os.chdir(r"C:\Users\SEASON\Desktop\준호타이핑용\testbench\PythonTyphoon")
+        self.setWindowIcon(QIcon(os.getcwd() + r"\typhoon_gui\icon.png"))
+        self.ui = uic.loadUi(os.getcwd() + r"\typhoon_gui\test.ui", self)
         self.setMaximumWidth(self.width())
         self.setMinimumWidth(self.width())
         self.setMaximumHeight(self.height())
@@ -121,13 +119,13 @@ class WindowClass(QDialog):
             self.shortcut_excel.activated.connect(self.get_excel_file_name_3)
 
     def get_ip_address(self):
-        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'r') as ip_address_file:
+        with open(os.getcwd() + r"\ip_address.txt", 'r') as ip_address_file:
             ip_address = ip_address_file.readline()
         self.QTextEdit_ip_address.setPlainText(ip_address)
 
     def change_ip_address(self):
         new_ip = self.QTextEdit_ip_address.toPlainText()
-        with open(r"C:\Users\Season\Desktop\준호타이핑용\testbench\ip_address.txt", 'w') as ip_address_file:
+        with open(os.getcwd() + r"\ip_address.txt", 'w') as ip_address_file:
             ip_address_file.write(new_ip)
         myWindow.append_text_function("IP 주소가 업데이트 되었습니다!")
 
