@@ -13,7 +13,7 @@ import re
 def init_hwp():
     hwp = win32.gencache.EnsureDispatch("HWPFrame.HwpObject")
     hwp.RegisterModule("FilePathCheckDLL", "SecurityModule")
-    hwp.XHwpWindows.Item(0).Visible = True
+    hwp.XHwpWindows.Item(0).Visible = False
     return hwp
 
 hwp = init_hwp()

@@ -14,6 +14,18 @@ import source_to_basefile
 # 아직 서술형 작은 문제 별 배점을 추가하진 않았습니다. 추후 업데이트 예정
 """
 
+def score_string(hwp, score):
+    hwp.HAction.Run("MoveLineEnd")
+    hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
+    hwp.HParameterSet.HInsertText.Text = " "
+    hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
+    hwp.HAction.GetDefault("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
+    hwp.HParameterSet.HEqEdit.Width = 2750
+    hwp.HParameterSet.HEqEdit.EqFontName = "HYhwpEQ"
+    hwp.HParameterSet.HEqEdit.string = f"left[{score}`점 right]"
+    hwp.HParameterSet.HEqEdit.TreatAsChar = 1
+    hwp.HAction.Execute("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
+
 def add_score(hwp, source, problem_number, score, choice = True):
     shutil.copyfile(source, rf"{source[:-4]}" + "_temp.hwp")
     source_temp = rf"{source[:-4]}" + "_temp.hwp"
@@ -33,17 +45,6 @@ def add_score(hwp, source, problem_number, score, choice = True):
         hwp.HParameterSet.HFindReplace.IgnoreMessage = 1
         hwp.HParameterSet.HFindReplace.FindType = 1
         hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
-
-    hwp.HAction.Run("MoveLineEnd")
-    hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
-    hwp.HParameterSet.HInsertText.Text = " "
-    hwp.HAction.Execute("InsertText", hwp.HParameterSet.HInsertText.HSet)
-    hwp.HAction.GetDefault("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
-    hwp.HParameterSet.HEqEdit.Width = 2750
-    hwp.HParameterSet.HEqEdit.EqFontName = "HYhwpEQ"
-    hwp.HParameterSet.HEqEdit.string = f"left[{score}`점 right]"
-    hwp.HParameterSet.HEqEdit.TreatAsChar = 1
-    hwp.HAction.Execute("EquationCreate", hwp.HParameterSet.HEqEdit.HSet)
 
     hwp.SaveAs(rf"{source}")
     os.remove(source_temp)
