@@ -14,7 +14,7 @@ import source_to_basefile
 # 아직 서술형 작은 문제 별 배점을 추가하진 않았습니다. 추후 업데이트 예정
 """
 
-def score_string(hwp, score):
+def insert_score(hwp, score):
     hwp.HAction.Run("MoveLineEnd")
     hwp.HAction.GetDefault("InsertText", hwp.HParameterSet.HInsertText.HSet)
     hwp.HParameterSet.HInsertText.Text = " "
@@ -46,6 +46,7 @@ def add_score(hwp, source, problem_number, score, choice = True):
         hwp.HParameterSet.HFindReplace.FindType = 1
         hwp.HAction.Execute("RepeatFind", hwp.HParameterSet.HFindReplace.HSet)
 
+    insert_score(hwp, score)
     hwp.SaveAs(rf"{source}")
     os.remove(source_temp)
     sleep(0.2)
@@ -55,3 +56,10 @@ def problem_array_to_exam_problem(hwp, array, grade : int, test_name : str, dest
         directory_source, problem_number, exam_number, score = problem[0], problem[1], problem[2], problem[3]
         source_to_basefile.source_to_basefile_copy_problem(hwp = hwp, source = directory_source, problem_number = problem_number)
         source_to_basefile.source_to_basefile_paste_problem(hwp = hwp, destination = destination, problem_number = exam_number)
+
+def main():
+    #TODO
+    pass
+
+if __name__ == "__main__":
+    main()
