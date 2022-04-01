@@ -24,7 +24,7 @@ class WindowClass(QDialog):
     def __init__(self):
         
         super().__init__()
-        os.chdir(r"C:\Users\SEASON\Desktop\준호타이핑용\testbench\PythonTyphoon")
+        os.chdir(r"C:\Users\SEASON\Desktop\ljh\testbench\PythonTyphoon")
         self.setWindowIcon(QIcon(os.getcwd() + r"\typhoon_gui\icon.png"))
         self.ui = uic.loadUi(os.getcwd() + r"\typhoon_gui\test.ui", self)
         self.setMaximumWidth(self.width())
@@ -203,7 +203,7 @@ class WindowClass(QDialog):
             caption="한글 파일을 선택해주세요.",
             filter=file_filter,
             initialFilter="한글 파일 (*.hwp)",
-            directory=os.getcwd()
+            directory=r"\\Desktop-r3553ul\기출시험지\문제저장용\문제+답지"
         )
         self.QTextEdit_hwp_directory_2.setPlainText(response[0])
 
@@ -417,6 +417,13 @@ def source_to_problem_execute_gui(hwp, excel: str, grade_number: int, test_name:
 
 def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_address: str, excel=None,
                            test_mode: bool = False):
+    end_string = """1번, 2번, 3번, 4번, 5번, 6번, 7번, 8번, 9번, 10번,
+                     11번, 12번, 13번, 14번, 15번, 16번, 17번, 18번, 19번, 20번,
+                     21번, 22번, 23번, 24번, 25번, 26번, 27번, 28번, 29번, 30번,
+                     31번, 32번, 33번, 34번, 35번, 36번, 37번, 38번, 39번, 40번,
+                     41번, 42번, 43번, 44번, 45번, 46번, 47번, 48번, 49번, 50번
+                     """
+    end_string2 = """풀이, 타이핑"""
     start_time = dt.now()
     hwp.Open(rf'{basefile}')
     # 검토용파일 존재하는지 검사
@@ -462,6 +469,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     field_list_change_solution_number = list(map(lambda y: int(y) - 1, list(map(lambda x: x[:-5], field_list_change_solution_number))))
     problem_change_problem = problems.iloc[field_list_change_problem_number]
     problem_change_solution = problems.iloc[field_list_change_solution_number]
+    hwp.Save()
     for i in range(problem_change_problem.shape[0]):  # 각 문제에 대하여
         problem_change_problem_set = problem_change_problem.iloc[i]
         src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name=test_name,
@@ -488,12 +496,30 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         if not os.path.exists(problem_directory):
             raise Exception(f"{field_list_change_problem_number[i] + 1}번문제 문제저장용 파일이 존재하지 않습니다!")
         hwp.Open(rf"{problem_directory}")
-        time.sleep(5)
         hwp.MoveToField(f"{src[1]}번문제")
+
         start_pos = hwp.GetPos()
         hwp.HAction.Run("SelectAll")
-        hwp.HAction.Run("MoveRight")
-        end_pos = hwp.GetPos()
+        hwp.HAction.Run("MoveLeft")
+
+        find_word(hwp, end_string, 10)
+        hwp.HAction.Run("MoveLineEnd")
+        end_pos1 = hwp.GetPos()
+
+        hwp.SetPos(*start_pos)
+        find_word(hwp, end_string2, 10)
+        hwp.HAction.Run("MoveLineEnd")
+        end_pos2 = hwp.GetPos()
+
+        # 문제의 끝 정해주기
+        if (end_pos1[0] == end_pos2[0]):
+            if end_pos1[1] <= end_pos2[1]: end_pos = end_pos2
+            else: end_pos = end_pos1
+        elif end_pos1[0] < end_pos2[0]:
+            end_pos = end_pos1
+        else:
+            end_pos = end_pos2
+        
         hwp.SetPos(*start_pos)
         hwp.Run("Select")
         hwp.SetPos(*end_pos)
@@ -512,7 +538,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     for i in range(problem_change_solution.shape[0]):
         problem_change_solution_set = problem_change_solution.iloc[i]
         src = array_to_problem_directory(problem_change_solution_set, grade=grade_number, test_name=test_name,
-                                         for_release=False, test=test_mode)
+                                         for_release=False, ip_address=ip_address, test=test_mode)
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.append_text_function_2(string=f"{field_list_change_solution_number[i] + 1}번풀이 반영중...({i + 1}번째 입력)")
         hwp.Open(rf'{basefile}')
