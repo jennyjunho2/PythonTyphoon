@@ -284,7 +284,7 @@ class WindowClass(QDialog):
             self.pushButton_execute_3.setEnabled(True)
         except Exception as e:
             myWindow.append_text_function_3(string="오류가 발생했습니다 : " + str(e))
-            self.pushButton_execute_e.setEnabled(True)
+            self.pushButton_execute_3.setEnabled(True)
 
 
 def new_basefile_no_number_gui(file_name: str, grade_number, test_mode=False):
@@ -446,7 +446,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     for field_problem_number in field_list_problem_number:
         hwp.MoveToField(field_problem_number, start=False)
         hwp.HAction.Run("SelectAll")
-        if hwp.CharShape.Item("TextColor") == 255:  # 빨간색일 경우
+        if hwp.CharShape.Item("TextColor") <= 255 and hwp.CharShape.Item("TextColor") >= 128:  # 빨간색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_problem_number.append(hwp.GetCurFieldName())
             hwp.HAction.Run("SelectAll")
@@ -457,7 +457,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     for field_solution_number in field_list_solution_number:
         hwp.MoveToField(field_solution_number, start=False)
         hwp.HAction.Run("SelectAll")
-        if hwp.CharShape.Item("TextColor") == 255:  # 빨간색일 경우
+        if hwp.CharShape.Item("TextColor") <= 255 and hwp.CharShape.Item("TextColor") >= 128:  # 빨간색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_solution_number.append(hwp.GetCurFieldName())
             hwp.HAction.Run("SelectAll")
@@ -470,6 +470,9 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     problem_change_problem = problems.iloc[field_list_change_problem_number]
     problem_change_solution = problems.iloc[field_list_change_solution_number]
     hwp.Save()
+
+    problem_read_only = []
+    solution_read_only = []
     for i in range(problem_change_problem.shape[0]):  # 각 문제에 대하여
         problem_change_problem_set = problem_change_problem.iloc[i]
         src = array_to_problem_directory(problem_change_problem_set, grade=grade_number, test_name=test_name,
@@ -479,7 +482,10 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
 
         # 반영 전 검토용파일 문제 복사하기
         hwp.Open(rf'{basefile}')
-        #shape_copy_paste(hwp)
+        if (hwp.EditMode == 0):
+            problem_read_only.append(dst_problem_number)
+            continue
+
         hwp.MoveToField(f"{field_list_change_problem_number[i] + 1}번문제글상자", start=True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
@@ -542,7 +548,10 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
         problem_directory, src_problem_number, dst_problem_number, src_problem_score = src[0], src[1], src[2], src[3]
         myWindow.append_text_function_2(string=f"{field_list_change_solution_number[i] + 1}번풀이 반영중...({i + 1}번째 입력)")
         hwp.Open(rf'{basefile}')
-        #shape_copy_paste(hwp)
+        if (hwp.EditMode == 0):
+            solution_read_only.append(dst_problem_number)
+            continue
+        
         hwp.MoveToField(f"{field_list_change_solution_number[i] + 1}번풀이글상자", start=True)
         start_pos = hwp.GetPos()
         hwp.Run("Cancel")
@@ -578,9 +587,18 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     end_time = dt.now()
     elapsed_time = end_time - start_time
     myWindow.append_text_function_2(f'반영을 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+
+    if (len(problem_read_only) != 0):
+        myWindow.append_text_function_2(f'읽기 전용으로 열려 반영하지 못한 문제 번호 : ')
+        myWindow.append_text_function_2(' '.join(map(lambda x: str(x)+'번', problem_read_only)))
+        myWindow.append_text_function_2(f' ')
+    
+    if (len(solution_read_only) != 0):
+        myWindow.append_text_function_2(f'읽기 전용으로 열려 반영하지 못한 풀이 번호 : ')
+        myWindow.append_text_function_2(' '.join(map(lambda x: str(x)+'번', solution_read_only)))
+        myWindow.append_text_function_2(f' ')
     myWindow.progressbar_2.setValue(100)
     hwp.Quit()
-
 
 def add_reference_gui(hwp, test_name: str, grade_number, ip_address: str, reference_string: str, excel=None,
                       test_mode: bool = False):
@@ -597,7 +615,7 @@ def add_reference_gui(hwp, test_name: str, grade_number, ip_address: str, refere
     myWindow.append_text_function_3(string="엑셀 로딩 완료")
 
     dst_problem_number_for_field = [x for x in range(1, len(readexcel(excel, grade=grade_number)[test_name]) + 1)]
-    dst = new_basefile_no_number_gui(test_name, grade_number=grade_number, test_mode=test_mode)
+    problem_read_only = []
     for i in range(problems.shape[0]):
         myWindow.append_text_function_3(string=f"{dst_problem_number_for_field[i]}번 출처 표시중...({i + 1}번째 입력)")
         problem_set = problems.iloc[i]
@@ -608,13 +626,31 @@ def add_reference_gui(hwp, test_name: str, grade_number, ip_address: str, refere
         if not os.path.exists(problem_directory):
             raise Exception(f"{i + 1}번문제 문제저장용 파일이 존재하지 않습니다!")
         hwp.Open(rf"{problem_directory}")
-        time.sleep(5)
+        if (hwp.EditMode == 0):
+            problem_read_only.append(dst_problem_number)
+            continue
+
         hwp.MoveToField(f"{src[1]}번문제")
         hwp.HAction.Run("SelectAll")
         hwp.HAction.Run("MoveRight")
-        hwp.HAction.Run("BreakPara")
+        hwp.HAction.Run("BreakLine")
+
+        start_pos = hwp.GetPos()
+        start_line = hwp.KeyIndicator()[5]
         insert_text(hwp, string=reference_string)
         hwp.HAction.Run("StyleShortcut6")
+        end_pos = hwp.GetPos()
+        end_line = hwp.KeyIndicator()[5]
+  
+        while (start_line != end_line):
+            hwp.SetPos(*start_pos)
+            hwp.Run("Select")
+            hwp.SetPos(*end_pos)
+            hwp.HAction.Run("CharShapeSpacingDecrease")
+            hwp.HAction.Run("CharShapeSpacingDecrease")
+            hwp.HAction.Run("MoveRight")
+            end_pos = hwp.GetPos()
+            end_line = hwp.KeyIndicator()[5]
 
         hwp.Save()
         myWindow.append_text_function_3(string=f"{dst_problem_number_for_field[i]}번 출처 표시 완료! ({i + 1}번째 입력)")
@@ -625,6 +661,10 @@ def add_reference_gui(hwp, test_name: str, grade_number, ip_address: str, refere
     end_time = dt.now()
     elapsed_time = end_time - start_time
     myWindow.append_text_function(f'출처 표시를 완료하였습니다. 약 {elapsed_time.seconds}초 소요되었습니다.')
+    if (len(problem_read_only) != 0):
+        myWindow.append_text_function_2(f'읽기 전용으로 열려 출처를 표시하지 못한 문제 번호 : ')
+        myWindow.append_text_function_2(' '.join(map(lambda x: str(x)+'번', problem_read_only)))
+        myWindow.append_text_function_2(f' ')
     myWindow.progressbar.setValue(100)
     hwp.Quit()
 
