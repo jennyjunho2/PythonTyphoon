@@ -446,7 +446,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     for field_problem_number in field_list_problem_number:
         hwp.MoveToField(field_problem_number, start=False)
         hwp.HAction.Run("SelectAll")
-        if hwp.CharShape.Item("TextColor") <= 255 and hwp.CharShape.Item("TextColor") >= 128:  # 빨간색일 경우
+        if hwp.CharShape.Item("TextColor") != 0x00:  # 검은색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_problem_number.append(hwp.GetCurFieldName())
             hwp.HAction.Run("SelectAll")
@@ -457,7 +457,7 @@ def basefile_to_source_gui(hwp, basefile: str, test_name: str, grade_number, ip_
     for field_solution_number in field_list_solution_number:
         hwp.MoveToField(field_solution_number, start=False)
         hwp.HAction.Run("SelectAll")
-        if hwp.CharShape.Item("TextColor") <= 255 and hwp.CharShape.Item("TextColor") >= 128:  # 빨간색일 경우
+        if hwp.CharShape.Item("TextColor") != 0x00:  # 검은색일 경우
             hwp.HAction.Run("MoveLeft")
             field_list_change_solution_number.append(hwp.GetCurFieldName())
             hwp.HAction.Run("SelectAll")
