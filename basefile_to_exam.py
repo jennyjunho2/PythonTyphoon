@@ -58,7 +58,7 @@ def problem_array_to_exam_problem(hwp, array, grade : int, test_name : str, dest
         source_to_basefile.source_to_basefile_paste_problem(hwp = hwp, destination = destination, problem_number = exam_number)
 
 def main():
-    
+    pass
 
 if __name__ == "__main__":
     main()
